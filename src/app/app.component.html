@@ -1,0 +1,79 @@
+<button color="primary" (click)="video()">Video</button>
+<button color="primary" (click)="mic()">Mic</button>
+<button color="primary" (click)="startMeeting()">startMeeting</button>
+<button color="primary" (click)="joinMeeting()">joinMeeting</button>
+<input [(ngModel)]="this.videoService.meetingId" />
+<input [(ngModel)]="this.videoService.participantId" />
+
+<br />
+<button
+  *ngFor="let videoDevice of videoService.availableVideoDevices"
+  (click)="onVideoDeviceSelect(videoDevice)"
+>
+  {{ videoDevice.label }}
+</button>
+DmdTwzyN9j3EaEokTRLA
+<h2>1. Start your Webcam</h2>
+<div class="videos">
+  <span>
+    <h3>Local Stream</h3>
+    <video
+      [srcObject]="videoService.localStream"
+      [autoplay]="true"
+      [muted]="true"
+    ></video>
+    <div>
+      Video: {{ videoService.localStream?.getVideoTracks()[0].enabled }}
+    </div>
+    <div>Mic: {{ videoService.localStream?.getAudioTracks()[0].enabled }}</div>
+    <!-- <video id="webcamVideo" autoplay playsinline></video> -->
+  </span>
+  length = {{ videoService.partcipants.length }}
+  <div *ngFor="let peer of videoService.partcipants; let i = index">
+    <h3>{{ i + 1 }} {{ peer.participant.participantId }}</h3>
+
+    <div [ngSwitch]="peer.status">
+      <div *ngSwitchCase="'new'">output</div>
+      <div *ngSwitchCase="'connected'">
+        <video [srcObject]="peer.remoteStream" [autoplay]="true"></video>
+        <div>Video: {{ peer.remoteStream.getVideoTracks()[0].enabled }}</div>
+        <div>Mic: {{ peer.remoteStream.getAudioTracks()[0].enabled }}</div>
+      </div>
+    </div>
+
+    <!-- <video id="remoteVideo" autoplay playsinline></video> -->
+  </div>
+</div>
+
+<button (click)="onWebcam()">Start webcam</button>
+<h2>2. Create a new Call</h2>
+<button id="callButton" disabled>Create Call (offer)</button>
+
+<h2>3. Join a Call</h2>
+<p>Answer the call from a different browser window or device</p>
+
+<input id="callInput" />
+<button id="answerButton" disabled>Answer</button>
+
+<h2>4. Hangup</h2>
+
+<button id="hangupButton" disabled>Hangup</button>
+
+<!-- <div class="container">
+  <h1> add robot </h1>
+  <form (ngSubmit)="addRobot(name, color, age)">
+      <p> name </p>
+      <input name="name" [(ngModel)]="name">
+      <p> color </p>
+      <input name="color" [(ngModel)]="color">
+      <p> age </p>
+      <input name="age" [(ngModel)]="age">
+      <button type="submit"> submit </button>
+  </form>
+</div>
+
+<div *ngFor="let robot of robots">
+  <h3> {{ robot.name }} </h3>
+  <p> color: {{ robot.color }} </p>
+  <p> age: {{ robot.age }} </p>
+</div>  -->
