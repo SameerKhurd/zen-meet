@@ -1,0 +1,109 @@
+<div class="d-flex p-1 bg-dark shadow">
+  <div class="me-auto ps-2 cust-text-tertiary align-self-center">
+    <i class="bi bi-hourglass align-middle pe-1" style="font-size: 1rem"></i>
+    {{ formatedMeetingTime }}
+  </div>
+
+  <div>
+    <button
+      class="btn btn-sm p-0 px-2 control-button"
+      [ngClass]="{
+        'control-button-selected rounded-0 rounded-top':
+          meetingSideSection.section === 'people'
+      }"
+      (click)="onPeopleSection()"
+    >
+      <i class="bi bi-people button-icon"></i>
+      <div class="button-label">People</div>
+    </button>
+  </div>
+
+  <div>
+    <button
+      class="btn btn-sm p-0 px-1 control-button"
+      [ngClass]="{
+        'control-button-selected rounded-0 rounded-top':
+          meetingSideSection.section === 'message'
+      }"
+      (click)="onMessageSection()"
+    >
+      <i class="bi bi-chat-text button-icon"></i>
+      <div class="button-label">Message</div>
+    </button>
+  </div>
+
+  <div>
+    <button class="btn btn-sm p-0 px-1 control-button" (click)="onRaiseHand()">
+      <i
+        class="button-icon bi"
+        [ngClass]="
+          meetingService.isRaisedHand
+            ? 'bi-hand-index-thumb-fill text-warning'
+            : 'bi-hand-index-thumb'
+        "
+      ></i>
+      <div class="button-label">
+        {{ meetingService.isRaisedHand ? "Lower" : "Raise" }}
+      </div>
+    </button>
+  </div>
+
+  <div>
+    <button class="btn btn-sm p-0 px-1 control-button">
+      <i class="button-icon bi bi-gear"></i>
+      <div class="button-label">Settings</div>
+    </button>
+  </div>
+
+  <div class="text-secondary align-middle h3 px-2">|</div>
+
+  <div>
+    <button
+      class="btn btn-sm p-0 px-1 control-button"
+      [disabled]="mediaService.cameraStatus === mediaStatus.LOADING"
+      (click)="onCameraToggle()"
+    >
+      <i
+        class="button-icon bi"
+        [ngClass]="
+          mediaService.cameraStatus === mediaStatus.ENABLED
+            ? 'bi-camera-video-fill'
+            : 'bi-camera-video-off-fill'
+        "
+      ></i>
+      <div class="button-label">Camera</div>
+    </button>
+  </div>
+
+  <div>
+    <button
+      class="btn btn-sm p-0 px-1 control-button"
+      [disabled]="mediaService.micStatus === mediaStatus.LOADING"
+      (click)="onMicToggle()"
+    >
+      <i
+        class="button-icon bi"
+        [ngClass]="
+          mediaService.micStatus === mediaStatus.ENABLED
+            ? 'bi-mic-fill'
+            : 'bi-mic-mute-fill'
+        "
+      ></i>
+      <div class="button-label">Mic</div>
+    </button>
+  </div>
+
+  <div class="text-secondary align-middle h3 px-1"></div>
+
+  <div>
+    <button class="btn btn-sm py-0 mt-2 px-2 pe-3 text-light bg-danger me-2">
+      <div class="call-hangaup-icon d-inline-block px-2">
+        <i
+          class="bi bi-telephone-fill align-middle text-light"
+          style="font-size: 1rem"
+        ></i>
+      </div>
+      Leave
+    </button>
+  </div>
+</div>

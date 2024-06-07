@@ -1,0 +1,10 @@
+<div *ngIf="!outlet.isActivated">
+  <p class="text-light">home works!</p>
+
+  <button color="primary" routerLink="meeting/start">Start Meeting</button>
+  <br />
+  <br />
+  <button color="primary" routerLink="meeting/join">Join Meeting</button>
+</div>
+
+<router-outlet #outlet="outlet"></router-outlet>

@@ -1,0 +1,32 @@
+.cust-text-secondary {
+  color: #bbb;
+}
+
+.cut-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.participant-details {
+  max-width: 100%;
+}
+
+.cust-text-tertiary {
+  font-size: 0.9rem;
+  color: #777;
+  font-weight: bold;
+}
+
+.particpant-avatar {
+  align-items: center;
+  border-radius: 50%;
+  display: inline-flex;
+  height: 1.5rem;
+  justify-content: center;
+  margin: -0.5rem -0.25rem;
+  min-width: 1.5rem;
+  width: 1.5rem;
+  //font-size: 0.7rem;
+}
+

@@ -1,14 +1,14 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { DataService } from './services/data.service';
-import { VideoService } from './services/video.service';
+import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
+import { DataService } from "./services/data.service";
+import { VideoService } from "./services/video.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements AfterViewInit {
-  title = 'angular-zoom';
+  title = "angular-zoom";
   inputMeetingId = this.videoService.meetingId;
   name!: string;
   color: any;
@@ -20,7 +20,7 @@ export class AppComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.videoService.requestMediaDevices();
+    //this.videoService.requestMediaDevices();
   }
 
   onVideoDeviceSelect(selectedVideoDevice: any) {
@@ -46,7 +46,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   startMeeting() {
-    this.videoService.startNewMeting();
+    //this.videoService.startNewMeting();
   }
 
   joinMeeting() {

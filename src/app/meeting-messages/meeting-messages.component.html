@@ -1,0 +1,127 @@
+<div class="" style="position: relative; height: 80vh; width: 100%">
+  <div
+    class="ps-2 pt-2 d-flex cust-text-secondary pt-2 pb-1 mb-1 px-2"
+    style="border-bottom: 2px solid #444"
+  >
+    <div class="h6 align-self-center">
+      <i
+        class="bi bi-chat-text button-icon pe-1 fw-bold"
+        style="font-size: 1.1rem"
+      ></i>
+      Messages
+    </div>
+    <div class="ms-auto">
+      <button
+        class="btn btn-sm btn-outline-light border-0 p-0 mb-2"
+        (click)="onClose()"
+      >
+        <i class="bi bi-x-lg px-1" style="font-size: 1rem"></i>
+      </button>
+    </div>
+  </div>
+  <br />
+
+  <!-- Chat Messages -->
+  <div
+    class="overflow-auto"
+    style="height: 60vh"
+    #scrollMe
+    [scrollTop]="scrollMe.scrollHeight"
+  >
+    <div
+      *ngIf="messagingService.messages.length === 0"
+      class="cust-text-secondary text-center"
+      style="margin-top: 50%"
+    >
+      <div class="py-3 mt-4">
+        <i
+          class="bi bi-chat-text button-icon pe-1 fw-bold py-3 text-secondary"
+          style="font-size: 2.5rem"
+        ></i>
+      </div>
+      <div class="chat-header">No any messages yet</div>
+    </div>
+    <div class="d-flex mt-2" *ngFor="let message of messagingService.messages">
+      <!-- Peer Meesage -->
+      <ng-container
+        *ngIf="
+          message.participantId !== meetingService.userParticipantId;
+          else userMessageTemplate
+        "
+      >
+        <div class="p-1 cust-text-secondary">
+          <small class="me-1 chat-avatar text-uppercase p-1 bg-light shadow">{{
+            splitPartcipantName(message.participantName)
+          }}</small>
+        </div>
+        <div class="py-1 cust-text-secondary peer-chat-container rounded-2">
+          <div class="chat-header d-flex">
+            <div class="cut-text">{{ message.participantName }}</div>
+            <div class="ms-auto ps-3 text-nowrap">
+              <small>{{ message.sendTime | date : "hh:mm a" }}</small>
+            </div>
+          </div>
+          <div class="chat-message pb-1">{{ message.content }}</div>
+        </div>
+      </ng-container>
+
+      <!--  User Message -->
+      <ng-template #userMessageTemplate>
+        <div
+          class="ms-auto me-2 py-1 cust-text-secondary user-chat-container rounded-2"
+        >
+          <div class="chat-header d-flex">
+            <div class="me-auto text-nowrap">
+              <div [ngSwitch]="message.status">
+                <div *ngSwitchCase="'sending'">
+                  <div
+                    class="spinner-border text-secondary spinner-border-sm"
+                    style="height: 0.6rem; width: 0.6rem"
+                    role="status"
+                  ></div>
+                </div>
+                <div *ngSwitchCase="'sent'">
+                  <small>{{ message.sendTime | date : "hh:mm a" }}</small>
+                </div>
+                <div *ngSwitchCase="'not-send'">
+                  <button type="button" class="btn btn-link">
+                    <small>
+                      <i
+                        class="bi bi-arrow-clockwise pe-1 align-middle p-0 chat-header"
+                        style="font-size: 0.8rem"
+                      ></i
+                      >Retry
+                    </small>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-message pb-1">{{ message.content }}</div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- User Message Input -->
+  <div class="pt-3" style="min-height: 10vh">
+    <textarea
+      type="text"
+      class="p-2 rounded-1"
+      rows="2"
+      placeholder="Type a new message"
+      [(ngModel)]="userMessage"
+      (keyup.enter)="onSendMessage()"
+    ></textarea>
+    <div class="text-end pe-1">
+      <button
+        class="btn btn-sm btn-outline-light cust-text-secondary border-0 p-0 pe-1"
+        (click)="onSendMessage()"
+      >
+        <div style="transform: rotate(45deg)">
+          <i class="bi bi-send pe-1" style="font-size: 1rem"></i>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

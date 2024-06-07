@@ -1,0 +1,205 @@
+<ng-container *ngIf="waitingToJoinMeeting; else meetingRoomTemplate">
+  <div class="container cust-text-secondary rounded">
+    <div class="text-center py-2 my-2">
+      <div class="h5">Join Meeting</div>
+      <div class="h4 fw-bold pt-1 text-light">
+        <strong>{{ meetingService.meetingName }}</strong>
+      </div>
+    </div>
+
+    <div class="row p-2">
+      <div class="p-2 col-6 justify-content-center">
+        <div class="video-container rounded-1 ms-auto me-2">
+          <ng-container [ngSwitch]="mediaService.cameraStatus">
+            <ng-container *ngSwitchCase="mediaStatus.ERROR"></ng-container>
+            <ng-container *ngSwitchCase="mediaStatus.LOADING">
+              <div
+                class="spinner-border cust-text-secondary"
+                role="status"
+                style="margin-top: 17vh"
+              ></div>
+            </ng-container>
+            <ng-container *ngSwitchCase="mediaStatus.ENABLED">
+              <video
+                class="rounded-1 video-container"
+                style="transform: scale(-1, 1)"
+                [srcObject]="mediaService.localMediaStream"
+                [autoplay]="true"
+                [muted]="true"
+              ></video>
+            </ng-container>
+            <ng-container *ngSwitchCase="mediaStatus.DISABLED">
+              <div class="cust-text-secondary" style="padding-top: 16vh">
+                <i
+                  class="bi p-2 bi-camera-video-off-fill"
+                  style="font-size: 1.5rem"
+                ></i>
+                <div class="pt-2 fw-bold">Your camera is turned off</div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+
+        <div
+          class="ms-auto d-flex justify-content-center video-container-width pt-2"
+        >
+          <div class="p-2 px-3">
+            <mat-slide-toggle
+              color="accent"
+              [checked]="mediaService.cameraStatus === mediaStatus.ENABLED"
+              [disabled]="mediaService.cameraStatus === mediaStatus.LOADING"
+              (change)="onCameraToggle()"
+            >
+              <div
+                *ngIf="
+                  mediaService.cameraStatus === mediaStatus.LOADING;
+                  else cameraToggleTemplate
+                "
+                class="mx-2 spinner-border cust-text-secondary spinner-border-sm"
+                role="status"
+              ></div>
+
+              <ng-template #cameraToggleTemplate>
+                <i
+                  class="bi px-2 cust-text-secondary"
+                  [ngClass]="
+                    mediaService.cameraStatus === mediaStatus.ENABLED
+                      ? 'bi-camera-video-fill'
+                      : 'bi-camera-video-off'
+                  "
+                  style="font-size: 1.4rem"
+                ></i>
+              </ng-template>
+            </mat-slide-toggle>
+          </div>
+          <div class="p-2 px-3">
+            <mat-slide-toggle
+              color="accent"
+              [checked]="mediaService.micStatus === mediaStatus.ENABLED"
+              [disabled]="mediaService.micStatus === mediaStatus.LOADING"
+              (change)="onMicToggle()"
+            >
+              <div
+                *ngIf="
+                  mediaService.micStatus === mediaStatus.LOADING;
+                  else micToggleTemplate
+                "
+                class="mx-2 spinner-border cust-text-secondary spinner-border-sm"
+                role="status"
+              ></div>
+
+              <ng-template #micToggleTemplate>
+                <i
+                  class="bi px-1 cust-text-secondary"
+                  [ngClass]="
+                    mediaService.micStatus === mediaStatus.ENABLED
+                      ? 'bi-mic-fill'
+                      : 'bi-mic-mute'
+                  "
+                  style="font-size: 1.2rem"
+                ></i>
+              </ng-template>
+            </mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="p-2 ps-3 col-4">
+        <div class="h6 pt-1 fw-bold">
+          <i class="bi bi-gear px-2 align-middle" style="font-size: 1.2rem"></i>
+          Device Settings
+        </div>
+
+        <div class="ps-2 pt-3">
+          <div class="">Video Settings</div>
+          <div class="pt-3 ps-2">
+            <small>
+              <i
+                class="bi bi-camera-video px-2 align-middle"
+                style="font-size: 1.2rem"
+              ></i>
+              Camera
+            </small>
+          </div>
+          <select
+            (change)="onCameraSelect()"
+            class="form-select form-select-sm bg-dark cust-text-secondary ms-3 mt-2"
+            [(ngModel)]="this.mediaService.camera"
+          >
+            <option
+              [ngValue]="camera"
+              *ngFor="let camera of deviceMedia?.cameras"
+            >
+              {{ camera.label }}
+            </option>
+          </select>
+          <div class="pt-4 mt-2">Audio Settings</div>
+          <div class="pt-3 ps-2">
+            <small>
+              <i
+                class="bi bi-volume-up px-2 align-middle"
+                style="font-size: 1.2rem"
+              ></i>
+              Speakar
+            </small>
+          </div>
+          <select
+            class="form-select form-select-sm bg-dark cust-text-secondary ms-3 mt-2"
+          >
+            <option
+              [value]="speakar"
+              *ngFor="let speakar of deviceMedia?.speakars"
+            >
+              {{ speakar.label }}
+            </option>
+          </select>
+          <div class="pt-4 ps-2">
+            <small>
+              <i
+                class="bi bi-mic px-2 align-middle"
+                style="font-size: 1.1rem"
+              ></i>
+              Microphone
+            </small>
+          </div>
+          <select
+            class="form-select form-select-sm bg-dark cust-text-secondary ms-3 mt-2"
+          >
+            <option [value]="mic" *ngFor="let mic of deviceMedia?.mics">
+              {{ mic.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center pt-2">
+      <div class="w-25 text-center">
+        <div class="h6 py-2 text-light">Type your name</div>
+        <input
+          type="text"
+          class="form-control bg-dark cust-text-secondary"
+          placeholder="Your Name"
+          [(ngModel)]="meetingService.userParticipantName"
+        />
+        <div class="mt-3">
+          <button
+            class="btn btn-outline-light cust-border m-2"
+            style="min-width: 100px"
+          >
+            <small> Close </small>
+          </button>
+          <button
+            class="btn btn-light border-secondary m-2"
+            style="min-width: 100px"
+            (click)="onJoinMeeting()"
+          >
+            <small> Join </small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-template #meetingRoomTemplate>
+  <app-meeting></app-meeting>
+</ng-template>

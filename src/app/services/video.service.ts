@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   DocumentReference,
   Firestore,
@@ -13,13 +13,14 @@ import {
   doc,
   CollectionReference,
   DocumentSnapshot,
-} from '@angular/fire/firestore';
+  Timestamp,
+} from "@angular/fire/firestore";
 
 // server config
 const STUN_SERVERS = {
   iceServers: [
     {
-      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
+      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
     },
   ],
 };
@@ -31,9 +32,9 @@ const offerOptions = {
 
 export const randomIDGenerator = (length: number = 10): string => {
   const CHARS =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  let autoId = '';
+  let autoId = "";
 
   for (let i = 0; i < length; i++) {
     autoId += CHARS.charAt(Math.floor(Math.random() * CHARS.length));
@@ -51,12 +52,12 @@ const mediaConstraints = {
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class VideoService {
   localStream: any = null;
   remoteStream: any = null;
-  meetingId = '';
+  meetingId = "";
   participantId = randomIDGenerator();
   localVideoActive = false;
   partcipants: any = [];
@@ -69,7 +70,7 @@ export class VideoService {
   async getAvailableDevices() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     this.availableVideoDevices = devices.filter(
-      (device) => device.kind === 'videoinput'
+      (device) => device.kind === "videoinput"
     );
 
     if (this.availableVideoDevices.length) {
@@ -115,7 +116,7 @@ export class VideoService {
             const sender = peerConnection
               .getSenders()
               .find((s) => s.track?.kind === videoTrack.kind);
-            console.log('Found sender:', sender);
+            console.log("Found sender:", sender);
             sender?.replaceTrack(videoTrack);
           });
         });
@@ -165,20 +166,37 @@ export class VideoService {
     this.isAudioEnabled = !this.isAudioEnabled;
   }
 
-  async startNewMeting() {
-    console.log('starting New Meeting', new Date().toLocaleDateString());
+  async startNewMeting(meetingName: string) {
+    console.log("starting New Meeting", new Date().toLocaleDateString());
 
-    const callDoc: DocumentReference = await addDoc(
-      collection(this.firestore, 'meetings'),
+    const meetingDocRef: DocumentReference = await addDoc(
+      collection(this.firestore, "meetings"),
       {
-        time: 'new Date().toLocaleDateString()',
+        meetingName: meetingName,
+        startTime: Timestamp.now(),
       }
     );
 
-    this.meetingId = callDoc.id;
-    console.log('Call ID', callDoc.id);
+    this.meetingId = meetingDocRef.id;
+    console.log("meetingDocRef ID", meetingDocRef.id);
 
-    this.joinMeeting(this.meetingId);
+    //this.joinMeeting(this.meetingId);
+  }
+
+  async getMeetingDetails(meetingId: string) {
+    console.log(Timestamp.now().toDate().toLocaleTimeString());
+    console.log(Timestamp.now().toDate().toLocaleString());
+
+    const meetingCollectionPath = `meetings`;
+
+    const meetingCollectionRef: CollectionReference = collection(
+      this.firestore,
+      meetingCollectionPath
+    );
+    const meetingDocRef = doc(meetingCollectionRef, meetingId);
+    const meetingDetails = (await getDoc(meetingDocRef)).data();
+    console.log(meetingDetails);
+    return meetingDetails
   }
 
   async joinMeeting(meetingId: string) {
@@ -194,13 +212,13 @@ export class VideoService {
     onSnapshot(participantsCollectionRef, (snapshot) => {
       snapshot.docChanges().forEach((change: any) => {
         console.log(
-          'User',
-          'snapshot',
+          "User",
+          "snapshot",
           change.type,
           change.doc.id,
           change.doc.data()
         );
-        if (change.type === 'added') {
+        if (change.type === "added") {
           const peerParticipant = change.doc.data();
           if (peerParticipant.participantId !== this.participantId) {
             this.addRTCMeshConnection(peerParticipant);
@@ -210,7 +228,7 @@ export class VideoService {
     });
 
     const newParticipant = {
-      participantName: '',
+      participantName: "",
       participantId: this.participantId,
     };
 
@@ -227,16 +245,16 @@ export class VideoService {
   ) {
     currPeerConnection.oniceconnectionstatechange = (event: any) => {
       switch (currPeerConnection.iceConnectionState) {
-        case 'connected':
-          partcipantConnection.status = 'connected';
+        case "connected":
+          partcipantConnection.status = "connected";
           console.log(partcipantConnection.remoteStream.getAudioTracks());
           this.stopLocalVideo();
           this.startLocalVideo();
           break;
-        case 'closed':
-        case 'failed':
-        case 'disconnected':
-          partcipantConnection.status = 'closed';
+        case "closed":
+        case "failed":
+        case "disconnected":
+          partcipantConnection.status = "closed";
           this.closeConnection(currPeerConnection);
           break;
       }
@@ -244,8 +262,8 @@ export class VideoService {
 
     currPeerConnection.onsignalingstatechange = (event: any) => {
       switch (currPeerConnection.signalingState) {
-        case 'closed':
-          partcipantConnection.status = 'closed';
+        case "closed":
+          partcipantConnection.status = "closed";
           this.closeConnection(currPeerConnection);
           break;
       }
@@ -254,7 +272,7 @@ export class VideoService {
 
   private closeConnection(currPeerConnection: RTCPeerConnection) {
     if (currPeerConnection) {
-      console.log('--> Closing the peer connection');
+      console.log("--> Closing the peer connection");
 
       currPeerConnection.ontrack = null;
       currPeerConnection.onicecandidate = null;
@@ -271,7 +289,7 @@ export class VideoService {
 
   private async addRTCMeshConnection(peerParticipant: any) {
     console.log(
-      'addRTCMeshConnection',
+      "addRTCMeshConnection",
       this.participantId,
       peerParticipant.participantId
     );
@@ -283,7 +301,7 @@ export class VideoService {
       fromPeerRTCPeerConnection: this.getNewRTCPeerConnection(),
       remoteStream: new MediaStream(),
       participant: peerParticipant,
-      status: 'new',
+      status: "new",
     };
 
     this.addRTCPeerConnectionEventHandler(
@@ -357,7 +375,7 @@ export class VideoService {
     currPeerConnection: RTCPeerConnection
   ) {
     console.log(
-      'establishToPeerConnection',
+      "establishToPeerConnection",
       connectionId,
       new Date().toLocaleDateString()
     );
@@ -384,7 +402,7 @@ export class VideoService {
 
     currPeerConnection.onicecandidate = (event: any) => {
       if (event.candidate) {
-        console.log('OFFER', 'onicecandidate', this.meetingId, connectionId);
+        console.log("OFFER", "onicecandidate", this.meetingId, connectionId);
         addDoc(connOfferCandidatesCollectionRef, event.candidate.toJSON());
       }
     };
@@ -402,26 +420,26 @@ export class VideoService {
     onSnapshot(connAnswerCandidiatesCollectionRef, async (snapshot) => {
       snapshot.docChanges().forEach((change: any) => {
         console.log(
-          'OFFER',
-          'onSnapshot',
+          "OFFER",
+          "onSnapshot",
           this.meetingId,
           connectionId,
           change.type,
           change.doc.data()
         );
 
-        if (change.type === 'added') {
+        if (change.type === "added") {
           try {
             const newICECandidate = new RTCIceCandidate(change.doc.data());
             currPeerConnection.addIceCandidate(newICECandidate);
           } catch (err) {
-            console.log('ERROR', connectionId);
+            console.log("ERROR", connectionId);
           }
         }
       });
 
       const connRemoteDescription = (await getDoc(connDocRef)).data()![
-        'answer'
+        "answer"
       ];
       if (
         !currPeerConnection.currentRemoteDescription &&
@@ -431,7 +449,7 @@ export class VideoService {
           connRemoteDescription
         );
         setTimeout(() => {
-          console.log('@@@@@@@', currPeerConnection.iceConnectionState);
+          console.log("@@@@@@@", currPeerConnection.iceConnectionState);
           currPeerConnection.setRemoteDescription(answerDescription);
         }, 3000);
       }
@@ -443,7 +461,7 @@ export class VideoService {
     currPeerConnection: RTCPeerConnection
   ) {
     console.log(
-      'establishFromPeerConnection',
+      "establishFromPeerConnection",
       connectionId,
       new Date().toLocaleDateString()
     );
@@ -468,16 +486,16 @@ export class VideoService {
 
     currPeerConnection.onicecandidate = (event: any) => {
       if (event.candidate) {
-        console.log('ANSWER', 'onicecandidate', this.meetingId, connectionId);
+        console.log("ANSWER", "onicecandidate", this.meetingId, connectionId);
         setTimeout(() => {
           addDoc(connAnswerCandidiatesCollectionRef, event.candidate.toJSON());
         }, 3000);
       }
     };
 
-    const connRemoteDescription = (await getDoc(connDocRef)).data()!['offer'];
+    const connRemoteDescription = (await getDoc(connDocRef)).data()!["offer"];
     const offerDescription = new RTCSessionDescription(connRemoteDescription);
-    console.log('%%%%%%%', currPeerConnection.iceConnectionState);
+    console.log("%%%%%%%", currPeerConnection.iceConnectionState);
 
     await currPeerConnection.setRemoteDescription(offerDescription);
 
@@ -496,19 +514,19 @@ export class VideoService {
     onSnapshot(connOfferCandidatesCollectionRef, async (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         console.log(
-          'ANSWER',
-          'onSnapshot',
+          "ANSWER",
+          "onSnapshot",
           this.meetingId,
           connectionId,
           change.type
         );
 
-        if (change.type === 'added') {
+        if (change.type === "added") {
           try {
             const newICECandidate = new RTCIceCandidate(change.doc.data());
             currPeerConnection.addIceCandidate(newICECandidate);
           } catch (err) {
-            console.log('ERROR', connectionId);
+            console.log("ERROR", connectionId);
           }
         }
       });

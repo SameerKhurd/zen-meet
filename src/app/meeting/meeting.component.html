@@ -1,1 +1,242 @@
-<p>meeting works!</p>
+<app-meeting-control-button
+  [meetingSideSection]="meetingSideSection"
+></app-meeting-control-button>
+
+<div class="d-flex">
+  <div class="body">
+    <div class="main">
+      <div
+        #meetingTiles
+        (window:resize)="onResize($event)"
+        class="w-100 d-flex align-self-center p-2"
+        style="height: 100%; position: relative"
+      >
+        <div
+          class="w-100 d-flex justify-content-center flex-wrap align-self-center"
+        >
+          <!-- <div
+            *ngFor="let participant of participants"
+            class="mt-1 ms-1 shadow d-inline-block"
+            [style.height]="videoTileHeight + 'px'"
+            [style.width]="videoTileWidth + 'px'"
+            style="position: relative"
+          >
+            <span class="bottom-left p-1 px-2 rounded-pill text-light shadow">
+              <i class="button-icon bi bi-mic-fill pe-2"></i>
+              <small>{{ peerParticipant.participantName }}</small>
+            </span>
+            <video
+              class="rounded-1"
+              [style.height]="videoTileHeight + 'px'"
+              [srcObject]="videoService.localStream"
+              [autoplay]="true"
+              [muted]="true"
+            ></video>
+          </div> -->
+          <div
+            *ngFor="let peerParticipant of meetingService.peerPartcipants"
+            class="text-light pt-2 d-flex align-items-center justify-content-center"
+            [style.height]="videoTileHeight + 'px'"
+            [style.width]="videoTileWidth + 'px'"
+          >
+            <div>
+              <div class="text-center">
+                <small
+                  class="particpant-avatar text-uppercase p-1"
+                  ngClass="participant-color-{{
+                    (peerParticipant.roll % 5) + 1
+                  }}"
+                  >{{
+                    splitPartcipantName(peerParticipant.participantName)
+                  }}</small
+                >
+              </div>
+              <div class="mt-3 rounded-2 text-light">
+                <i class="button-icon bi bi-mic-fill pe-2"></i>
+                <small>{{ peerParticipant.participantName }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <mat-grid-list cols="1" rowHeight="4:3">
+          <mat-grid-tile class="rounded-1">
+            <div class="rounded-2">
+              <video
+                class="rounded-1"
+                style="transform: scale(-1, 1)"
+                [srcObject]="videoService.localStream"
+                [autoplay]="true"
+                [muted]="true"
+              ></video>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="rounded-1">
+            <div class="temp rounded-2">
+              <span class="bottom-left p-1 px-2 rounded-3 text-light shadow">
+                <i class="button-icon bi bi-mic-fill pe-2"></i>
+                <small>Sameer Khurd</small>
+              </span>
+              <video
+                [srcObject]="videoService.localStream"
+                [autoplay]="true"
+                [muted]="true"
+              ></video>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="rounded-1">
+            <span class="bottom-left p-1 px-2 rounded-2 text-light">
+              <i class="button-icon bi bi-mic-fill pe-2"></i>
+              <small>Sameer Khurd</small>
+            </span>
+            <video
+              class="rounded-1"
+              [srcObject]="videoService.localStream"
+              [autoplay]="true"
+              [muted]="true"
+            ></video>
+          </mat-grid-tile>
+          <mat-grid-tile class="rounded-1">
+            <video
+              class="rounded-1"
+              [srcObject]="videoService.localStream"
+              [autoplay]="true"
+              [muted]="true"
+            ></video>
+          </mat-grid-tile>
+          <mat-grid-tile class="rounded-1">
+            <div class="text-center text-light pt-4">
+              <div
+                class="display-4 rounded-circle border border-0 p-4 bg-secondary"
+              >
+                SK
+              </div>
+              <div class="mt-3 px-2 rounded-2 text-light">
+                <i class="button-icon bi bi-mic-fill pe-2"></i>
+                <small>Sameer Khurd</small>
+              </div>
+            </div>
+          </mat-grid-tile>
+
+          <mat-grid-tile class="rounded-1">
+            <video
+              class="rounded-1"
+              [srcObject]="videoService.localStream"
+              [autoplay]="true"
+              [muted]="true"
+            ></video>
+          </mat-grid-tile>
+        </mat-grid-list> -->
+        <!-- <div id="flex">
+          <div class="video">
+            <video
+              style="max-width: 100%; max-height: 100%; object-fit: cover"
+              [srcObject]="videoService.localStream"
+              [autoplay]="true"
+              [muted]="true"
+            ></video>
+          </div>
+          <div class="video"></div>
+          <div class="video"></div>
+          <div class="video"></div>
+          <div class="video"></div>
+        </div> -->
+        <!-- <video
+          [srcObject]="videoService.localStream"
+          [autoplay]="true"
+          [muted]="true"
+        ></video>
+        <mat-grid-list cols="2" rowHeight="2:1">
+          <mat-grid-tile>
+            <video
+              [srcObject]="videoService.localStream"
+              [autoplay]="true"
+              [muted]="true"
+            ></video>
+          </mat-grid-tile>
+          <mat-grid-tile class="bg-info">2</mat-grid-tile>
+          <mat-grid-tile>
+          </mat-grid-tile>
+          <mat-grid-tile class="bg-info">4</mat-grid-tile>
+        </mat-grid-list> -->
+      </div>
+    </div>
+    <div class="footer text-secondary" style="position: relative">
+      <small> Meeting URL: www.hhtppasdasd/yvfvyiibCB </small>
+      <div
+        class="bottom-right-video p-1 bg-dark-1 border border-2"
+        [ngClass]="
+          meetingService.isRaisedHand ? 'border-warning' : 'border-dark'
+        "
+      >
+        <div style="position: relative">
+          <span class="bottom-left p-1 px-2 rounded-pill text-light shadow">
+            <i
+              *ngIf="meetingService.isRaisedHand"
+              class="bi bi-hand-index-thumb-fill text-warning pe-1"
+            ></i>
+
+            <i
+              class="button-icon pe-2"
+              [ngClass]="
+                mediaService.micStatus === mediaStatus.ENABLED
+                  ? 'bi-mic-fill'
+                  : 'bi-mic-mute-fill'
+              "
+            ></i>
+            <small>{{ meetingService.userParticipantName }} (You)</small>
+          </span>
+          <div
+            class="text-center d-flex align-items-center justify-content-center"
+            [style.height]="'140px'"
+            [style.width]="'188px'"
+          >
+            <ng-container [ngSwitch]="mediaService.cameraStatus">
+              <ng-container *ngSwitchCase="mediaStatus.ERROR"></ng-container>
+              <ng-container *ngSwitchCase="mediaStatus.LOADING">
+                <div
+                  class="spinner-border cust-text-secondary"
+                  role="status"
+                ></div>
+              </ng-container>
+              <ng-container *ngSwitchCase="mediaStatus.ENABLED">
+                <video
+                  style="transform: scale(-1, 1)"
+                  [srcObject]="mediaService.localMediaStream"
+                  [autoplay]="true"
+                  [muted]="true"
+                ></video>
+              </ng-container>
+              <ng-container *ngSwitchCase="mediaStatus.DISABLED">
+                <small
+                  class="particpant-avatar-small text-uppercase p-1"
+                  ngClass="participant-color-1"
+                  >{{
+                    splitPartcipantName(meetingService.userParticipantName)
+                  }}</small
+                >
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="meetingSideSection.section !== 'hide'"
+    class="p-2 flex-shrink-1 border-secondary bg-dark-1"
+    style="width: 25%"
+  >
+    <div [ngSwitch]="meetingSideSection.section">
+      <div *ngSwitchCase="'people'">
+        <app-meeting-participants
+          [meetingSideSection]="meetingSideSection"
+        ></app-meeting-participants>
+      </div>
+      <div *ngSwitchCase="'message'">
+        <app-meeting-messages
+          [meetingSideSection]="meetingSideSection"
+        ></app-meeting-messages>
+      </div>
+    </div>
+  </div>
+</div>

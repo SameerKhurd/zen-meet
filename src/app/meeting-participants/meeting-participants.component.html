@@ -1,0 +1,158 @@
+<div class="" style="width: 100%">
+  <div
+    class="d-flex cust-text-secondary pt-2 pb-1 mb-1 px-2"
+    style="border-bottom: 2px solid #444"
+  >
+    <div class="h6 align-self-center">
+      <i
+        class="bi bi-people button-icon pe-1 align-middle fw-bold"
+        style="font-size: 1.1rem"
+      ></i>
+      People
+    </div>
+    <div class="ms-auto">
+      <button
+        class="btn btn-sm btn-outline-light border-0 p-0 mb-2"
+        (click)="onClose()"
+      >
+        <i class="bi bi-x-lg px-1" style="font-size: 1rem"></i>
+      </button>
+    </div>
+  </div>
+  <br />
+
+  <!-- Invite Link -->
+  <div class="d-flex cust-text-secondary px-1">
+    <div class="align-self-center">
+      <i class="bi bi-person-add pe-1" style="font-size: 1rem"></i>
+      <small> Invite someone</small>
+    </div>
+    <div class="ms-auto">
+      <button
+        class="btn btn-sm btn-outline-light border-secondary"
+        (click)="copyMeetingURLToClipboard()"
+        style="min-width: 100px"
+      >
+        <i
+          class="bi px-1"
+          style="font-size: 0.7rem"
+          [ngClass]="
+            isMeetingURLCopied ? 'bi-check2-circle fw-bold' : 'bi-copy'
+          "
+        ></i>
+
+        <small> {{ isMeetingURLCopied ? "Copied" : "Copy URL" }} </small>
+      </button>
+    </div>
+  </div>
+  <br />
+
+  <!-- Partcipants List -->
+  <div class="cust-text-tertiary fw-small px-1 pb-2">
+    <small
+      >Currently in this meeting ({{
+        meetingService.peerPartcipants.length + 1
+      }})</small
+    >
+  </div>
+
+  <div class="overflow-auto" style="max-height: 60vh">
+    <div class="participant-details">
+      <!-- Current User Participant -->
+      <div class="d-flex mt-1">
+        <div class="mx-1 ps-1 align-self-center">
+          <small
+            class="particpant-avatar text-uppercase p-1 shadow"
+            ngClass="participant-color-1"
+            >{{
+              splitPartcipantName(meetingService.userParticipantName)
+            }}</small
+          >
+        </div>
+        <div
+          class="ps-2 cust-text-secondary align-self-center cut-text"
+          style="max-width: 150px"
+        >
+          <small>{{ meetingService.userParticipantName }}</small>
+        </div>
+        <div class="ps-2 cust-text-secondary align-self-center">
+          <small>(You)</small>
+        </div>
+        <div class="ms-auto p-2 cust-text-secondary">
+          <div class="d-flex flex-nowrap">
+            <button
+              class="btn btn-sm p-0 border-0 btn-outline-light"
+              (click)="onRaiseHand()"
+            >
+              <i
+                class="bi px-1"
+                style="font-size: 0.8rem"
+                [ngClass]="
+                  meetingService.isRaisedHand
+                    ? 'bi-hand-index-thumb-fill text-warning'
+                    : 'bi-hand-index-thumb'
+                "
+              ></i>
+            </button>
+            <button
+              class="btn btn-sm p-0 border-0 btn-outline-light"
+              [disabled]="mediaService.micStatus === mediaStatus.LOADING"
+              (click)="onMicToggle()"
+            >
+              <i
+                class="bi px-1"
+                [ngClass]="
+                  mediaService.micStatus === mediaStatus.ENABLED
+                    ? 'bi-mic'
+                    : 'bi-mic-mute'
+                "
+              ></i>
+            </button>
+            <button
+              class="btn btn-sm p-0 border-0 btn-outline-light pe-1"
+              [disabled]="mediaService.cameraStatus === mediaStatus.LOADING"
+              (click)="onCameraToggle()"
+            >
+              <i
+                class="bi ps-1"
+                [ngClass]="
+                  mediaService.cameraStatus === mediaStatus.ENABLED
+                    ? 'bi-camera-video'
+                    : 'bi-camera-video-off'
+                "
+              ></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Peer Partcipants -->
+      <div
+        class="d-flex mt-1"
+        *ngFor="let peerParticipant of meetingService.peerPartcipants"
+      >
+        <div class="mx-1 ps-1 align-self-center">
+          <small
+            class="particpant-avatar text-uppercase p-1 shadow"
+            ngClass="participant-color-{{ (peerParticipant.roll % 5) + 1 }}"
+            >{{ splitPartcipantName(peerParticipant.participantName) }}</small
+          >
+        </div>
+        <div
+          class="ps-2 cust-text-secondary align-self-center cut-text"
+          style="max-width: 150px"
+        >
+          <small>{{ peerParticipant.participantName }}</small>
+        </div>
+
+        <div class="ms-auto p-2 cust-text-secondary">
+          <div class="d-flex flex-nowrap text-light">
+            <i class="bi bi-hand-index-thumb-fill text-warning px-1"></i>
+            <i class="bi bi-mic px-1"></i>
+            <i class="bi bi-camera-video px-1"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

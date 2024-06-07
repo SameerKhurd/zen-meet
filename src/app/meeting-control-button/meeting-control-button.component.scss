@@ -1,0 +1,35 @@
+.button-label {
+  color: #999;
+  //font-size: 9px;
+  font-size: 0.6rem;
+  margin-top: -2px;
+  margin-bottom: 2px;
+}
+
+.button-icon {
+  color: #dedede;
+  font-size: 1.1rem;
+}
+
+.control-button {
+  min-width: 50px;
+  border-bottom: 3px solid transparent;
+}
+
+.control-button-selected {
+  border-bottom: 3px solid #c1c1c1;
+}
+
+.control-button:hover {
+  background-color: #ededed2b;
+}
+
+.call-hangaup-icon {
+  transform: rotate(135deg);
+}
+
+.cust-text-tertiary {
+  font-size: 0.9rem;
+  color: #888;
+}
+
