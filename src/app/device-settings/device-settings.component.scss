@@ -1,0 +1,48 @@
+::ng-deep .mdc-switch__icons {
+    display: none !important;
+  }
+  
+  .video-container {
+    height: 300px;
+    width: 400px;
+    background-color: #242424;
+    text-align: center;
+  }
+  
+  .cust-text-secondary {
+    color: #bbb;
+  }
+  
+  .video-container-width {
+    width: 52vh;
+  }
+  
+  .cust-text-tertiary {
+    color: #777;
+    font-weight: bold;
+  }
+  
+  input,
+  select,
+  .cust-border {
+    border: 1px solid #333;
+  }
+  
+  .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23bbb' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  }
+  
+  input::placeholder {
+    color: #666;
+  }
+  
+  video {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+    box-shadow: 0 4px 18px 0 rgba(177, 177, 177, 0.08),
+      0 6px 20px 0 rgba(177, 177, 177, 0.05);
+  }
+  

@@ -1,0 +1,23 @@
+<div class="container box-shadow-default">
+  <div class="float-end pt-3">
+    <button
+      class="btn btn-sm btn-outline-light border-0 p-0"
+      (click)="onClose()"
+    >
+      <i class="bi bi-x-lg px-1" style="font-size: 1rem"></i>
+    </button>
+  </div>
+  <app-device-settings></app-device-settings>
+
+  <div class="d-flex">
+    <div class="ms-auto mb-3 me-2">
+      <button
+        class="btn btn-sm btn-outline-light border-secondary float-end"
+        (click)="onClose()"
+        style="min-width: 100px"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>

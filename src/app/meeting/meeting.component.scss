@@ -34,18 +34,22 @@ span.video-description {
 
 .bottom-left {
   position: absolute;
-  bottom: 8px;
-  left: 12px;
-  background-color: #31323cc8;
+  bottom: 0px;
+  left: 8px;
+  //background-color: #31323cc8;
   font-size: small;
-  border: 1px solid #4141419c;
+  //border: 1px solid #4141419c;
   z-index: 1;
+
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.545);
 }
 
 .bottom-right-video {
   position: absolute;
   bottom: 0;
   right: 0;
+  padding: 4px 2px;
   background-color: #181818;
 }
 
@@ -55,14 +59,51 @@ span.video-description {
   display: inline-flex;
   height: 7.5rem;
   justify-content: center;
-  margin: 0rem -0.25rem;
+  margin: 4px;
   min-width: 7.5rem;
   width: 7.5rem;
   font-size: 3.7rem;
   //color: darkslateblue;
   //background-color: blanchedalmond;
+  // box-shadow: 0 4px 8px 0 rgba(177, 177, 177, 0.2),
+  //   0 6px 20px 0 rgba(177, 177, 177, 0.19);
+}
+
+.box-shadow-default {
   box-shadow: 0 4px 8px 0 rgba(177, 177, 177, 0.2),
     0 6px 20px 0 rgba(177, 177, 177, 0.19);
+}
+
+.waiting-to-join {
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 2px 10px,
+    rgb(255, 255, 255, 0.05) 0px 0px 2px 15px;
+  animation: waiting 1.9s infinite;
+}
+
+@keyframes waiting {
+  75% {
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 2px 20px,
+      rgb(255, 255, 255, 0.05) 0px 0px 2px 45px;
+  }
+  95% {
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 2px 20px,
+      rgb(255, 255, 255, 0.05) 0px 0px 2px 45px;
+  }
+}
+
+.hand-raised-avatar {
+  box-shadow: 0 4px 8px 0 rgba(179, 173, 95, 0.5),
+    0 6px 20px 0 rgba(177, 177, 177, 0.19);
+}
+
+.border-transparent {
+  border-color: transparent !important ;
+}
+
+.border-speaking {
+  border-color: #2189ff !important;
+  box-shadow: 0 4px 8px 0 rgba(95, 115, 179, 0.5),
+  0 6px 20px 0 rgba(177, 177, 177, 0.19);
 }
 
 .particpant-avatar-small {
@@ -83,4 +124,51 @@ span.video-description {
 
 .bg-dark-1 {
   background-color: #202020;
+}
+
+.connecting {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  //bottom: 47%;
+  backdrop-filter: blur(1px);
+  background-color: rgba(0, 0, 0, 0.65);
+  animation: mymove 1.5s infinite;
+}
+@keyframes mymove {
+  50% {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.elementToFadeInAndOut {
+  position: absolute;
+  width: 100%;
+  z-index: 100;
+  bottom: 8px;
+  -webkit-animation: fadeinout 3s linear forwards;
+  animation: fadeinout 3s linear forwards;
+}
+
+@-webkit-keyframes fadeinout {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35%,
+  65% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinout {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35%,
+  65% {
+    opacity: 1;
+  }
 }

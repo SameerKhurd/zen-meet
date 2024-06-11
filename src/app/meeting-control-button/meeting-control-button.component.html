@@ -1,18 +1,31 @@
 <div class="d-flex p-1 bg-dark shadow">
   <div class="me-auto ps-2 cust-text-tertiary align-self-center">
-    <i class="bi bi-hourglass align-middle pe-1" style="font-size: 1rem"></i>
-    {{ formatedMeetingTime }}
+    <div class="d-inline-block">
+      <i class="bi bi-hourglass align-middle pe-1" style="font-size: 1rem"></i>
+      {{ formatedMeetingTime }}
+    </div>
+    <div class="d-inline-block ps-2">
+      <span class="text-secondary align-middle h3 px-1 pe-2">|</span>
+      {{ meetingService.meetingName }}
+    </div>
   </div>
 
   <div>
     <button
-      class="btn btn-sm p-0 px-2 control-button"
+      class="btn btn-sm p-0 px-2 control-button position-relative"
       [ngClass]="{
         'control-button-selected rounded-0 rounded-top':
           meetingSideSection.section === 'people'
       }"
       (click)="onPeopleSection()"
     >
+      <div
+        *ngIf="meetingService.participantRaisedHandCount > 0"
+        class="position-absolute button-count-info rounded-pill bg-danger text-light"
+      >
+        <strong>{{ meetingService.participantRaisedHandCount }}</strong>
+      </div>
+
       <i class="bi bi-people button-icon"></i>
       <div class="button-label">People</div>
     </button>
@@ -20,13 +33,22 @@
 
   <div>
     <button
-      class="btn btn-sm p-0 px-1 control-button"
+      class="btn btn-sm p-0 px-1 control-button position-relative"
       [ngClass]="{
         'control-button-selected rounded-0 rounded-top':
           meetingSideSection.section === 'message'
       }"
       (click)="onMessageSection()"
     >
+      <div
+        *ngIf="
+          meetingSideSection.section !== 'message' &&
+          messagingService.unreadMessageCount > 0
+        "
+        class="position-absolute button-count-info rounded-pill bg-danger text-light"
+      >
+        <strong>{{ messagingService.unreadMessageCount }}</strong>
+      </div>
       <i class="bi bi-chat-text button-icon"></i>
       <div class="button-label">Message</div>
     </button>
@@ -49,7 +71,30 @@
   </div>
 
   <div>
-    <button class="btn btn-sm p-0 px-1 control-button">
+    <button
+      class="btn btn-sm p-0 px-1 control-button"
+      (click)="openEmojiDialog()"
+    >
+      <i class="button-icon bi bi-emoji-smile"></i>
+      <div class="button-label">React</div>
+    </button>
+  </div>
+
+  <div>
+    <button
+      class="btn btn-sm p-0 px-1 control-button"
+      (click)="openInvitePeopleDialog()"
+    >
+      <i class="button-icon bi bi-person-add"></i>
+      <div class="button-label">Invite</div>
+    </button>
+  </div>
+
+  <div>
+    <button
+      class="btn btn-sm p-0 px-1 control-button"
+      (click)="openDeviceSettingsDialog()"
+    >
       <i class="button-icon bi bi-gear"></i>
       <div class="button-label">Settings</div>
     </button>

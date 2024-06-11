@@ -29,6 +29,14 @@ import { ParticipantCollectionService } from "./services/database-services/parti
 import { ConnectionCollectionService } from "./services/database-services/connection-collection.service";
 import { MessageCollectionService } from "./services/database-services/message-collection.service";
 import { MessagingService } from "./services/messaging.service";
+import { AuthService } from "./services/auth.service";
+import { PickerModule } from "@ctrl/ngx-emoji-mart";
+import { EmojiPickerComponent } from "./emoji-picker/emoji-picker.component";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatMenuModule } from "@angular/material/menu";
+import { DeviceSettingsComponent } from './device-settings/device-settings.component';
+import { DeviceSettingsDailogComponent } from './device-settings-dailog/device-settings-dailog.component';
+import { InvitePeopleDailogComponent } from './invite-people-dailog/invite-people-dailog.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +49,10 @@ import { MessagingService } from "./services/messaging.service";
     MeetingMainComponent,
     MeetingStartComponent,
     MeetingJoinComponent,
+    EmojiPickerComponent,
+    DeviceSettingsComponent,
+    DeviceSettingsDailogComponent,
+    InvitePeopleDailogComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,6 +62,9 @@ import { MessagingService } from "./services/messaging.service";
     MatSlideToggleModule,
     FormsModule,
     BrowserAnimationsModule,
+    PickerModule,
+    MatDialogModule,
+    MatMenuModule,
   ],
   providers: [
     DataService,
@@ -60,6 +75,7 @@ import { MessagingService } from "./services/messaging.service";
     ConnectionCollectionService,
     MessageCollectionService,
     MeetingService,
+    AuthService,
     MessagingService,
   ],
   bootstrap: [AppComponent],

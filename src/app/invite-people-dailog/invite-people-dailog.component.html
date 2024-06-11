@@ -1,0 +1,86 @@
+<div class="container box-shadow-default text-light">
+  <div class="d-flex p-2 pb-0 pt-4 justify-content-between">
+    <div class="h5 fw-bold">
+      <i class="bi bi-share-fill pe-2" style="font-size: 1rem"></i>
+      Share Invite
+    </div>
+    <div class="">
+      <button
+        class="btn btn-sm btn-outline-light border-0 p-0 mb-2"
+        (click)="onClose()"
+      >
+        <i class="bi bi-x-lg px-1" style="font-size: 1rem"></i>
+      </button>
+    </div>
+  </div>
+  <div class="px-2 pb-2">Copy and share the meeting URL to invite people</div>
+  <div class="py-3 px-2">
+    <div class="d-flex justify-content-between">
+      <div class="align-self-center"><strong>Meeting ID</strong></div>
+      <div>
+        <button
+          class="btn btn-sm btn-outline-light border-secondary border-0"
+          (click)="copyToClipboard('meetingIDCopied')"
+          [disabled]="meetingCopy.meetingIDCopied"
+        >
+          <i
+            class="bi px-1"
+            style="font-size: 0.7rem"
+            [ngClass]="
+              meetingCopy.meetingIDCopied
+                ? 'bi-check2-circle fw-bold'
+                : 'bi-copy'
+            "
+          ></i>
+
+          <small> {{ meetingCopy.meetingIDCopied ? "Copied" : "Copy" }} </small>
+        </button>
+      </div>
+    </div>
+    <div class="cust-text-tertiary">
+      <span>tIQSBsmGU8tWBTvwj6IQ</span>
+    </div>
+  </div>
+
+  <div class="py-3 px-2">
+    <div class="d-flex justify-content-between">
+      <div class="align-self-center"><strong>Meeting URL</strong></div>
+      <div>
+        <button
+          class="btn btn-sm btn-outline-light border-secondary border-0"
+          (click)="copyToClipboard('meetingURLCopied')"
+          [disabled]="meetingCopy.meetingURLCopied"
+        >
+          <i
+            class="bi px-1"
+            style="font-size: 0.7rem"
+            [ngClass]="
+              meetingCopy.meetingURLCopied
+                ? 'bi-check2-circle fw-bold'
+                : 'bi-copy'
+            "
+          ></i>
+
+          <small>
+            {{ meetingCopy.meetingURLCopied ? "Copied" : "Copy" }}
+          </small>
+        </button>
+      </div>
+    </div>
+    <div class="cust-text-tertiary">
+      <span>http://www.sparkmeet.web.app/meeting/tIQSBsmGU8tWBTvwj6IQ</span>
+    </div>
+  </div>
+
+  <div class="d-flex pt-4 mt-2">
+    <div class="ms-auto mb-3 me-2">
+      <button
+        class="btn btn-sm btn-outline-light border-secondary float-end"
+        (click)="onClose()"
+        style="min-width: 100px"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>

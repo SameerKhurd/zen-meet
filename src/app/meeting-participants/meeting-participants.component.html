@@ -30,18 +30,14 @@
     <div class="ms-auto">
       <button
         class="btn btn-sm btn-outline-light border-secondary"
-        (click)="copyMeetingURLToClipboard()"
-        style="min-width: 100px"
+        (click)="openInvitePeopleDialog()"
       >
         <i
-          class="bi px-1"
-          style="font-size: 0.7rem"
-          [ngClass]="
-            isMeetingURLCopied ? 'bi-check2-circle fw-bold' : 'bi-copy'
-          "
+          class="bi bi-share-fill p-1 pe-2 align-middle"
+          style="font-size: 0.8rem"
         ></i>
 
-        <small> {{ isMeetingURLCopied ? "Copied" : "Copy URL" }} </small>
+        <small> Share </small>
       </button>
     </div>
   </div>
@@ -50,9 +46,7 @@
   <!-- Partcipants List -->
   <div class="cust-text-tertiary fw-small px-1 pb-2">
     <small
-      >Currently in this meeting ({{
-        meetingService.peerPartcipants.length + 1
-      }})</small
+      >Currently in this meeting ({{ currPeerPartcipants.length + 1 }})</small
     >
   </div>
 
@@ -60,7 +54,12 @@
     <div class="participant-details">
       <!-- Current User Participant -->
       <div class="d-flex mt-1">
-        <div class="mx-1 ps-1 align-self-center">
+        <div
+          class="mx-1 align-self-center rounded-circle border border-2"
+          [ngClass]="
+            meetingService.isRaisedHand ? 'border-warning' : 'border-dark'
+          "
+        >
           <small
             class="particpant-avatar text-uppercase p-1 shadow"
             ngClass="participant-color-1"
@@ -70,7 +69,7 @@
           >
         </div>
         <div
-          class="ps-2 cust-text-secondary align-self-center cut-text"
+          class="ps-1 cust-text-secondary align-self-center cut-text"
           style="max-width: 150px"
         >
           <small>{{ meetingService.userParticipantName }}</small>
@@ -81,6 +80,7 @@
         <div class="ms-auto p-2 cust-text-secondary">
           <div class="d-flex flex-nowrap">
             <button
+              *ngIf="meetingService.isRaisedHand"
               class="btn btn-sm p-0 border-0 btn-outline-light"
               (click)="onRaiseHand()"
             >
@@ -128,10 +128,15 @@
 
       <!-- Peer Partcipants -->
       <div
-        class="d-flex mt-1"
-        *ngFor="let peerParticipant of meetingService.peerPartcipants"
+        class="d-flex mt-2"
+        *ngFor="let peerParticipant of currPeerPartcipants"
       >
-        <div class="mx-1 ps-1 align-self-center">
+        <div
+          class="mx-1 align-self-center rounded-circle border border-2"
+          [ngClass]="
+            peerParticipant.handRaised ? 'border-warning' : 'border-dark'
+          "
+        >
           <small
             class="particpant-avatar text-uppercase p-1 shadow"
             ngClass="participant-color-{{ (peerParticipant.roll % 5) + 1 }}"
@@ -139,7 +144,7 @@
           >
         </div>
         <div
-          class="ps-2 cust-text-secondary align-self-center cut-text"
+          class="ps-1 cust-text-secondary align-self-center cut-text"
           style="max-width: 150px"
         >
           <small>{{ peerParticipant.participantName }}</small>
@@ -147,9 +152,34 @@
 
         <div class="ms-auto p-2 cust-text-secondary">
           <div class="d-flex flex-nowrap text-light">
-            <i class="bi bi-hand-index-thumb-fill text-warning px-1"></i>
-            <i class="bi bi-mic px-1"></i>
-            <i class="bi bi-camera-video px-1"></i>
+            <div
+              *ngIf="
+                peerParticipant.connection.status == connectionStatus.CONNECTED;
+                else connectingParticipantTemplate
+              "
+            >
+              <i
+                *ngIf="peerParticipant.handRaised"
+                class="bi bi-hand-index-thumb-fill text-warning px-1"
+              ></i>
+              <i
+                class="bi px-1"
+                [ngClass]="
+                  peerParticipant.micEnabled ? 'bi-mic' : 'bi-mic-mute'
+                "
+              ></i>
+              <i
+                class="bi px-1"
+                [ngClass]="
+                  peerParticipant.videoEnabled
+                    ? 'bi-camera-video'
+                    : 'bi-camera-video-off'
+                "
+              ></i>
+            </div>
+            <ng-template #connectingParticipantTemplate>
+              <div class="text-secondary"><small>Connecting...</small></div>
+            </ng-template>
           </div>
         </div>
       </div>

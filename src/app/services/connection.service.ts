@@ -2,6 +2,7 @@ import { ConnectionCollectionService } from "./database-services/connection-coll
 import { AnswerCandidatesChannel } from "./channels/answer-candidates-channel";
 import { OfferCandidatesChannel } from "./channels/offer-candidates-channel";
 import { stunServers } from "src/environments/environment";
+import { Subject } from "rxjs";
 
 const offerOptions = {
   offerToReceiveAudio: true,
@@ -18,6 +19,8 @@ export enum connectionStatus {
 export class ConnectionService {
   remoteMediaStream!: MediaStream;
   status: connectionStatus = connectionStatus.NEW;
+  participantConnectionEvent = new Subject<boolean>();
+  audioReceiver: RTCRtpReceiver | any = undefined;
 
   private meetingId: string = "";
   private userParticipantId: string = "";
@@ -86,6 +89,9 @@ export class ConnectionService {
     localMediaStream: MediaStream
   ): void {
     localMediaStream.getTracks().forEach((track: MediaStreamTrack) => {
+      console.log("addtrack", track);
+      //console.log("toPeerConnectionss", this.toPeerConnection);
+      //console.log("fromPeerConnectionss", this.fromPeerConnection);
       this.toPeerConnection.addTrack(track, localMediaStream);
       this.fromPeerConnection.addTrack(track, localMediaStream);
     });
@@ -93,7 +99,16 @@ export class ConnectionService {
 
   private getRemoteMediaStreamFromMeshConnection(): void {
     this.toPeerConnection.ontrack = (event: RTCTrackEvent) => {
+      console.log("toPeerConnection", event);
       this.remoteMediaStream = event.streams[0];
+      // connection.remoteStream.getTracks((track: any) => {
+      //   connection.remoteStream.addTrack(track);
+      // });
+    };
+
+    this.fromPeerConnection.ontrack = (event: RTCTrackEvent) => {
+      console.log("fromPeerConnection", event);
+      //this.remoteMediaStream = event.streams[0];
       // connection.remoteStream.getTracks((track: any) => {
       //   connection.remoteStream.addTrack(track);
       // });
@@ -101,14 +116,14 @@ export class ConnectionService {
   }
 
   private async createMeshConnection(localMediaStream: MediaStream) {
-    await this.establishToPeerConnection();
-    await this.establishFromPeerConnection();
+    await this.establishToPeerConnection(localMediaStream);
+    await this.establishFromPeerConnection(localMediaStream);
 
-    this.addLocalMediaStreamToMeshConnection(localMediaStream);
-    this.getRemoteMediaStreamFromMeshConnection();
+    //this.addLocalMediaStreamToMeshConnection(localMediaStream);
+    //this.getRemoteMediaStreamFromMeshConnection();
   }
 
-  private async establishToPeerConnection() {
+  private async establishToPeerConnection(localMediaStream: MediaStream) {
     await this.connectionCollectionService.addConnection(
       this.meetingId,
       this.toPeerConnectionId
@@ -118,7 +133,8 @@ export class ConnectionService {
     this.attachConnectionEventHandlers(
       this.toPeerConnection,
       this.offerCandidatesChannel,
-      this.toPeerConnectionId
+      this.toPeerConnectionId,
+      localMediaStream
     );
 
     await this.setConnectionOfferDescription();
@@ -133,13 +149,14 @@ export class ConnectionService {
     );
   }
 
-  private async establishFromPeerConnection() {
+  private async establishFromPeerConnection(localMediaStream: MediaStream) {
     this.fromPeerConnection = this.createNewRTCPeerConnection();
 
     this.attachConnectionEventHandlers(
       this.fromPeerConnection,
       this.answerCandidatesChannel,
-      this.fromPeerConnectionId
+      this.fromPeerConnectionId,
+      localMediaStream
     );
 
     await this.setConnectionRemoteDescription(
@@ -296,12 +313,16 @@ export class ConnectionService {
   }
 
   private handleIceConnectionStateChangeEvent(
-    peerConnection: RTCPeerConnection
+    peerConnection: RTCPeerConnection,
+    connectionId: string,
+    localMediaStream: MediaStream
   ): void {
     peerConnection.oniceconnectionstatechange = (event: any) => {
       switch (peerConnection.iceConnectionState) {
         case "connected":
           this.status = connectionStatus.CONNECTED;
+          this.addLocalMediaStreamToMeshConnection(localMediaStream);
+
           //this.stopLocalVideo();
           //this.startLocalVideo();
           break;
@@ -311,6 +332,8 @@ export class ConnectionService {
           this.closeConnection();
           break;
       }
+      this.participantConnectionEvent.next(true);
+      console.log(connectionId, peerConnection.iceConnectionState);
     };
   }
 
@@ -329,14 +352,39 @@ export class ConnectionService {
   private attachConnectionEventHandlers(
     peerConnection: RTCPeerConnection,
     candidatesChannel: any,
-    connectionId: string
+    connectionId: string,
+    localMediaStream: MediaStream
   ): void {
+    localMediaStream.getTracks().forEach((track: MediaStreamTrack) => {
+      //console.log("toPeerConnectionss", this.toPeerConnection);
+      //console.log("fromPeerConnectionss", this.fromPeerConnection);
+      peerConnection.addTrack(track, localMediaStream);
+    });
+
+    peerConnection.ontrack = (event: RTCTrackEvent) => {
+      this.remoteMediaStream = event.streams[0];
+
+      this.audioReceiver = peerConnection.getReceivers().find((r) => {
+        return r.track.kind === "audio";
+      });
+      // if (event.track.kind == "video" || event.track.kind == "audio") {
+      //   this.remoteMediaStream.addTrack(event.track);
+      // }
+
+      // remoteMediaStream.getTracks().forEach((track: any) => {
+      //   this.remoteMediaStream.addTrack(track);
+      // });
+    };
     this.handleIceCandidateEvent(
       peerConnection,
       candidatesChannel,
       connectionId
     );
-    this.handleIceConnectionStateChangeEvent(peerConnection);
+    this.handleIceConnectionStateChangeEvent(
+      peerConnection,
+      connectionId,
+      localMediaStream
+    );
     this.handleSignalingStateChangeEvent(peerConnection);
   }
 

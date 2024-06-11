@@ -41,65 +41,117 @@
       </div>
       <div class="chat-header">No any messages yet</div>
     </div>
-    <div class="d-flex mt-2" *ngFor="let message of messagingService.messages">
-      <!-- Peer Meesage -->
-      <ng-container
+    <div *ngFor="let message of messagingService.messages; let i = index">
+      <div
         *ngIf="
-          message.participantId !== meetingService.userParticipantId;
-          else userMessageTemplate
+          i == 0 ||
+          messagingService.messages[i - 1]?.sendTime?.toDateString() !==
+            message.sendTime?.toDateString()
         "
+        class="text-center cust-text-secondary d-flex py-3"
       >
-        <div class="p-1 cust-text-secondary">
-          <small class="me-1 chat-avatar text-uppercase p-1 bg-light shadow">{{
-            splitPartcipantName(message.participantName)
-          }}</small>
-        </div>
-        <div class="py-1 cust-text-secondary peer-chat-container rounded-2">
-          <div class="chat-header d-flex">
-            <div class="cut-text">{{ message.participantName }}</div>
-            <div class="ms-auto ps-3 text-nowrap">
-              <small>{{ message.sendTime | date : "hh:mm a" }}</small>
-            </div>
-          </div>
-          <div class="chat-message pb-1">{{ message.content }}</div>
-        </div>
-      </ng-container>
-
-      <!--  User Message -->
-      <ng-template #userMessageTemplate>
         <div
-          class="ms-auto me-2 py-1 cust-text-secondary user-chat-container rounded-2"
+          class="mx-3 flex-fill align-self-center border-bottom border-secondary border-2"
+        ></div>
+        <div>
+          <small>
+            {{ message.sendTime?.toDateString() | date : "EEE MMM d, y" }}
+          </small>
+        </div>
+        <div
+          class="mx-3 flex-fill align-self-center border-bottom border-secondary border-2"
+        ></div>
+      </div>
+
+      <div class="mt-2" [ngSwitch]="message.type">
+        <div
+          *ngSwitchCase="'user-joined-event'"
+          class="d-flex justify-content-center text-secondary py-2"
         >
-          <div class="chat-header d-flex">
-            <div class="me-auto text-nowrap">
-              <div [ngSwitch]="message.status">
-                <div *ngSwitchCase="'sending'">
-                  <div
-                    class="spinner-border text-secondary spinner-border-sm"
-                    style="height: 0.6rem; width: 0.6rem"
-                    role="status"
-                  ></div>
-                </div>
-                <div *ngSwitchCase="'sent'">
+          <small>
+            <strong>
+              <i
+                class="bi bi-camera-video align-middle"
+                style="font-size: 1.2rem"
+              ></i>
+              &nbsp; {{ message.sendTime | date : "hh:mm a" }} &nbsp;</strong
+            >
+            {{ message.content }}
+          </small>
+        </div>
+        <div *ngSwitchCase="'message'" class="d-flex">
+          <!-- Peer Meesage -->
+          <ng-container
+            *ngIf="
+              message.participantId !== meetingService.userParticipantId;
+              else userMessageTemplate
+            "
+          >
+            <div class="p-1 cust-text-secondary">
+              <small
+                class="me-1 chat-avatar text-uppercase p-1 shadow mt-1"
+                ngClass="participant-color-{{
+                  (meetingService.getParticipantStyleCode(
+                    message.participantId
+                  ) %
+                    5) +
+                    1
+                }}"
+                >{{ splitPartcipantName(message.participantName) }}</small
+              >
+            </div>
+            <div class="py-1 cust-text-secondary peer-chat-container rounded-2">
+              <div class="chat-header d-flex">
+                <div class="cut-text">{{ message.participantName }}</div>
+                <div class="ms-auto ps-3 text-nowrap text-secondary">
                   <small>{{ message.sendTime | date : "hh:mm a" }}</small>
                 </div>
-                <div *ngSwitchCase="'not-send'">
-                  <button type="button" class="btn btn-link">
-                    <small>
-                      <i
-                        class="bi bi-arrow-clockwise pe-1 align-middle p-0 chat-header"
-                        style="font-size: 0.8rem"
-                      ></i
-                      >Retry
-                    </small>
-                  </button>
+              </div>
+              <div class="chat-message pb-1 lh-sm">{{ message.content }}</div>
+            </div>
+          </ng-container>
+
+          <!--  User Message -->
+          <ng-template #userMessageTemplate>
+            <div
+              class="ms-auto me-2 py-1 cust-text-secondary user-chat-container rounded-2"
+            >
+              <div class="chat-header d-flex">
+                <div class="me-auto text-nowrap text-secondary">
+                  <div [ngSwitch]="message.status">
+                    <div *ngSwitchCase="'sending'">
+                      <div
+                        class="spinner-border text-secondary spinner-border-sm"
+                        style="height: 0.6rem; width: 0.6rem; font-size: 0.7rem"
+                        role="status"
+                      ></div>
+                    </div>
+                    <div *ngSwitchCase="'not-send'">
+                      <button
+                        type="button"
+                        class="btn btn-link p-0 chat-header pe-3 m-0"
+                        (click)="onRetryMessage(message)"
+                      >
+                        <small>
+                          <i
+                            class="bi bi-arrow-clockwise pe-1 align-middle fw-bold"
+                            style="font-size: 0.85rem"
+                          ></i
+                          >Retry
+                        </small>
+                      </button>
+                    </div>
+                    <div *ngSwitchDefault>
+                      <small>{{ message.sendTime! | date : "hh:mm a" }}</small>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <div class="chat-message pb-1 lh-sm">{{ message.content }}</div>
             </div>
-          </div>
-          <div class="chat-message pb-1">{{ message.content }}</div>
+          </ng-template>
         </div>
-      </ng-template>
+      </div>
     </div>
   </div>
 
@@ -113,15 +165,25 @@
       [(ngModel)]="userMessage"
       (keyup.enter)="onSendMessage()"
     ></textarea>
-    <div class="text-end pe-1">
-      <button
-        class="btn btn-sm btn-outline-light cust-text-secondary border-0 p-0 pe-1"
-        (click)="onSendMessage()"
-      >
-        <div style="transform: rotate(45deg)">
-          <i class="bi bi-send pe-1" style="font-size: 1rem"></i>
-        </div>
-      </button>
+    <div class="d-flex justify-content-between pe-1">
+      <div>
+        <button
+          class="btn btn-sm btn-outline-light cust-text-secondary border-0 p-0 px-1"
+          (click)="openEmojiDialog()"
+        >
+          <i class="bi bi-emoji-smile" style="font-size: 1rem"></i>
+        </button>
+      </div>
+      <div>
+        <button
+          class="btn btn-sm btn-outline-light cust-text-secondary border-0 p-0 px-1"
+          (click)="onSendMessage()"
+        >
+          <div style="transform: rotate(45deg)">
+            <i class="bi bi-send pe-1" style="font-size: 1rem"></i>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
 </div>

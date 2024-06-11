@@ -2,12 +2,13 @@ import { Injectable } from "@angular/core";
 
 import { MessageCollectionService } from "./database-services/message-collection.service";
 import { MessagesChannel } from "./channels/messages-channel";
+import { Subject } from "rxjs";
 
 export interface Message {
   participantId: string;
   participantName: string;
   content: string;
-  type: "message";
+  type: "message" | "reaction" | "user-joined-event";
   sendTime?: Date;
   status?: "not-send" | "sending" | "sent";
 }
@@ -17,11 +18,25 @@ export interface Message {
 })
 export class MessagingService {
   messages: Message[] = [];
-  lastSeenTimeStamp: Date = new Date();
+  currStartTimeStamp: Date = new Date();
+  lastReadTimeStamp: Date = new Date();
+  unreadMessageCount: number = 0;
   private messageChannel!: MessagesChannel;
+  participantEmohiReactionEvent = new Subject<{
+    participantId: string;
+    emojiReaction: string;
+  }>();
 
   constructor(messageCollectionService: MessageCollectionService) {
     this.messageChannel = new MessagesChannel(messageCollectionService);
+    const userJoinedEventMessage: Message = {
+      participantId: "",
+      participantName: "",
+      content: "You joined the meeting",
+      type: "user-joined-event",
+      sendTime: this.currStartTimeStamp,
+    };
+    this.messages.push(userJoinedEventMessage);
   }
 
   async sendMessage(meetingId: string, userMessage: Message): Promise<void> {
@@ -31,7 +46,31 @@ export class MessagingService {
       userMessage.participantId,
       userMessage.participantName,
       userMessage.content,
-      userMessage.type
+      "message"
+    );
+  }
+
+  async retryMessage(meetingId: string, userMessage: Message): Promise<void> {
+    await this.messageChannel.publish(
+      meetingId,
+      userMessage.participantId,
+      userMessage.participantName,
+      userMessage.content,
+      "reaction"
+    );
+  }
+
+  async sendEmojiReaction(
+    meetingId: string,
+    userMessage: Message
+  ): Promise<void> {
+    this.participantEmojiReact(userMessage.participantId, userMessage.content);
+    await this.messageChannel.publish(
+      meetingId,
+      userMessage.participantId,
+      userMessage.participantName,
+      userMessage.content,
+      "reaction"
     );
   }
 
@@ -48,15 +87,65 @@ export class MessagingService {
     userParticipantId: string
   ): void {
     if (type === "added") {
-      if (message.participantId !== userParticipantId) {
-        this.messages.push(message);
-      }
-      if (this.lastSeenTimeStamp > message.sendTime!) {
-        console.log("sort")
-        this.messages = this.messages.sort(
-          (a, b) => a.sendTime?.getTime()! - b.sendTime?.getTime()!
-        );
+      if (this.currStartTimeStamp > message.sendTime!) {
+        switch (message.type) {
+          case "message": {
+            this.addMessage(message);
+            this.messages = this.messages.sort(
+              (a, b) => a.sendTime?.getTime()! - b.sendTime?.getTime()!
+            );
+            break;
+          }
+          case "reaction": {
+            break;
+          }
+        }
+      } else if (message.participantId !== userParticipantId) {
+        switch (message.type) {
+          case "message": {
+            this.addMessage(message);
+            break;
+          }
+          case "reaction": {
+            this.participantEmojiReact(message.participantId, message.content);
+            break;
+          }
+        }
       }
     }
+  }
+
+  updateLastUserReadTimeStamp() {
+    this.unreadMessageCount = 0;
+    this.lastReadTimeStamp = new Date();
+  }
+
+  addMessage(message: Message): void {
+    if (message.sendTime?.getTime()! > this.lastReadTimeStamp.getTime()) {
+      this.unreadMessageCount++;
+    }
+    this.messages.push(message);
+  }
+
+  calculateUnreadMessage(): void {
+    let unreadMessageCount = 0;
+    for (const message of this.messages) {
+      if (
+        message.type === "message" &&
+        message.sendTime?.getTime()! > this.lastReadTimeStamp.getTime()
+      ) {
+        unreadMessageCount++;
+      }
+    }
+  }
+
+  private participantEmojiReact(
+    participantId: string,
+    emojiReaction: string
+  ): void {
+    this.participantEmohiReactionEvent.next({
+      participantId: participantId,
+      emojiReaction: emojiReaction,
+    });
   }
 }

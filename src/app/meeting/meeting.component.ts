@@ -6,7 +6,10 @@ import {
   HostListener,
 } from "@angular/core";
 import { MediaService, mediaStatus } from "../services/media.service";
-import { MeetingService } from "../services/meeting.service";
+import { MeetingService, PeerParticipant } from "../services/meeting.service";
+import { connectionStatus } from "../services/connection.service";
+import { InvitePeopleDailogComponent } from "../invite-people-dailog/invite-people-dailog.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-meeting",
@@ -15,30 +18,29 @@ import { MeetingService } from "../services/meeting.service";
 })
 export class MeetingComponent implements AfterViewInit {
   @ViewChild("meetingTiles") elementView!: ElementRef;
+  connectionStatus = connectionStatus;
   tilesHeight = 0;
   tilesWidth = 0;
   videoTileHeight = 250;
   videoTileWidth = 250;
   mediaStatus = mediaStatus;
-
+  currPeerPartcipants: PeerParticipant[] = [];
   meetingSideSection: { section: "hide" | "people" | "message" } = {
     section: "people",
   };
 
-  tiles: any[] = [
-    { text: "One", cols: 3, rows: 1, color: "lightblue" },
-    { text: "Two", cols: 1, rows: 2, color: "lightgreen" },
-    { text: "Three", cols: 1, rows: 1, color: "lightpink" },
-    { text: "Four", cols: 2, rows: 1, color: "#DDBDF1" },
-  ];
-
   constructor(
     public mediaService: MediaService,
-    public meetingService: MeetingService
+    public meetingService: MeetingService,
+    public dialog: MatDialog
   ) {}
 
   ngAfterViewInit() {
-    this.computeTileDimensions();
+    this.onParticipantEvent();
+
+    this.meetingService.participantEvent.subscribe((event: boolean) => {
+      this.onParticipantEvent();
+    });
   }
 
   @HostListener("window:resize", ["$event"])
@@ -46,15 +48,27 @@ export class MeetingComponent implements AfterViewInit {
     this.computeTileDimensions();
   }
 
+  openInvitePeopleDialog() {
+    this.dialog.open(InvitePeopleDailogComponent);
+  }
+
+  private onParticipantEvent() {
+    this.currPeerPartcipants = this.meetingService.peerPartcipants.filter(
+      (peerParticipant: PeerParticipant) =>
+        peerParticipant.connection.status !== connectionStatus.CLOSED
+    );
+    this.computeTileDimensions();
+  }
+
   private computeTileDimensions() {
     this.tilesHeight = Math.floor(
-      this.elementView.nativeElement.offsetHeight * 0.95
+      this.elementView.nativeElement.offsetHeight * 0.9
     );
     this.tilesWidth = Math.floor(
-      this.elementView.nativeElement.offsetWidth * 0.95
+      this.elementView.nativeElement.offsetWidth * 0.9
     );
     const divideFactor: number = Math.ceil(
-      Math.sqrt(this.meetingService.peerPartcipants.length)
+      Math.sqrt(this.currPeerPartcipants.length)
     );
     this.videoTileWidth = Math.floor(this.tilesWidth / divideFactor);
     this.videoTileHeight = Math.floor((this.videoTileWidth * 3) / 4);

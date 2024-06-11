@@ -17,15 +17,37 @@ export class ParticipantChannel {
     );
   }
 
-  async publish(
+  async publishNewParticipant(
     meetingId: string,
     participantId: string,
-    participantName: string
+    participantName: string,
+    videoEnabled: boolean,
+    micEnabled: boolean,
+    handRaised: boolean
   ): Promise<void> {
     await this.participantCollectionService.addParticipant(
       meetingId,
       participantId,
-      participantName
+      participantName,
+      videoEnabled,
+      micEnabled,
+      handRaised
+    );
+  }
+
+  async publishParticipantChanges(
+    meetingId: string,
+    participantId: string,
+    videoEnabled: boolean,
+    micEnabled: boolean,
+    handRaised: boolean
+  ): Promise<void> {
+    await this.participantCollectionService.updateParticipantData(
+      meetingId,
+      participantId,
+      videoEnabled,
+      micEnabled,
+      handRaised
     );
   }
 }

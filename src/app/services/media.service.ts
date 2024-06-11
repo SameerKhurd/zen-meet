@@ -75,13 +75,15 @@ export class MediaService {
   }
 
   async requestMediaDevices(): Promise<void> {
-    this.cameraStatus = mediaStatus.LOADING;
-    this.micStatus = mediaStatus.LOADING;
-    this.localMediaStream = await navigator.mediaDevices.getUserMedia(
-      MEDIA_CONSTRAINTS
-    );
-    this.cameraStatus = mediaStatus.ENABLED;
-    this.micStatus = mediaStatus.ENABLED;
+    if (!this.localMediaStream) {
+      this.cameraStatus = mediaStatus.LOADING;
+      this.micStatus = mediaStatus.LOADING;
+      this.localMediaStream = await navigator.mediaDevices.getUserMedia(
+        MEDIA_CONSTRAINTS
+      );
+      this.cameraStatus = mediaStatus.ENABLED;
+      this.micStatus = mediaStatus.ENABLED;
+    }
   }
 
   private async startMediaDevice(

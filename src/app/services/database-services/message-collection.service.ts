@@ -21,7 +21,7 @@ export interface MessageDoc {
   participantName: string;
   participantId: string;
   content: string;
-  type: "message";
+  type: "message" | "reaction";
   sendTime: Timestamp;
 }
 
@@ -60,7 +60,7 @@ export class MessageCollectionService {
     participantId: string,
     participantName: string,
     content: string,
-    type: "message"
+    type: "message" | "reaction"
   ): Promise<void> {
     const messageDoc: MessageDoc = {
       participantName: participantName,

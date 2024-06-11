@@ -1,10 +1,49 @@
 <div *ngIf="!outlet.isActivated">
-  <p class="text-light">home works!</p>
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <div
+          class="mt-4 px-4 text-secondary h2 d-inline-block"
+          style="height: 30px"
+        >
+          <div class="position-relative">
+            <div class="content">
+              <div class="content__container">
+                <p class="content__container__text">let's</p>
 
-  <button color="primary" routerLink="meeting/start">Start Meeting</button>
-  <br />
-  <br />
-  <button color="primary" routerLink="meeting/join">Join Meeting</button>
+                <ul class="content__container__list">
+                  <li class="content__container__list__item">connect</li>
+                  <li class="content__container__list__item">focus</li>
+                  <li class="content__container__list__item">collaborate</li>
+                  <li class="content__container__list__item">meet</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="px-4 pt-2">
+          <i
+            class="bi bi-camera-video text-light p-2 px-3 rounded-4 bg-danger align-middle"
+            style="
+              font-size: 2.5rem;
+              border: 1px solid rgb(144, 50, 0);
+              color: rgb(255, 211, 211);
+            "
+          ></i>
+          <span class="ps-4 text-danger display-3 align-middle f">
+            <strong>ZenMeet</strong>
+          </span>
+        </div>
+        <div class="px-4 pt-3 display-3 fw-bold text-light">
+          Online Real-Time Communication Platform
+        </div>
+        <div class="px-4 pt-3 fs-5 lh-base" style="color: #ccc">
+          Enjoy video calls, audio calls, messaging, and interactive features
+          like reactions and raise hand with ZenMeet
+        </div>
+      </div>
+      <div class="col-6"></div>
+    </div>
+  </div>
 </div>
-
 <router-outlet #outlet="outlet"></router-outlet>

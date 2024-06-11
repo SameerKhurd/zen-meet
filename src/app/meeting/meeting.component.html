@@ -14,49 +14,224 @@
         <div
           class="w-100 d-flex justify-content-center flex-wrap align-self-center"
         >
-          <!-- <div
-            *ngFor="let participant of participants"
-            class="mt-1 ms-1 shadow d-inline-block"
-            [style.height]="videoTileHeight + 'px'"
-            [style.width]="videoTileWidth + 'px'"
-            style="position: relative"
-          >
-            <span class="bottom-left p-1 px-2 rounded-pill text-light shadow">
-              <i class="button-icon bi bi-mic-fill pe-2"></i>
-              <small>{{ peerParticipant.participantName }}</small>
-            </span>
-            <video
-              class="rounded-1"
-              [style.height]="videoTileHeight + 'px'"
-              [srcObject]="videoService.localStream"
-              [autoplay]="true"
-              [muted]="true"
-            ></video>
-          </div> -->
+          <!-- Waiting for participants to join -->
           <div
-            *ngFor="let peerParticipant of meetingService.peerPartcipants"
-            class="text-light pt-2 d-flex align-items-center justify-content-center"
-            [style.height]="videoTileHeight + 'px'"
-            [style.width]="videoTileWidth + 'px'"
+            *ngIf="currPeerPartcipants.length === 0; else participantTiles"
+            class="align-items-center text-light text-center"
           >
-            <div>
-              <div class="text-center">
-                <small
-                  class="particpant-avatar text-uppercase p-1"
-                  ngClass="participant-color-{{
-                    (peerParticipant.roll % 5) + 1
-                  }}"
-                  >{{
-                    splitPartcipantName(peerParticipant.participantName)
-                  }}</small
-                >
-              </div>
-              <div class="mt-3 rounded-2 text-light">
-                <i class="button-icon bi bi-mic-fill pe-2"></i>
-                <small>{{ peerParticipant.participantName }}</small>
+            <div style="position: relative">
+              <div class="text-center rounded-circle">
+                <div class="">
+                  <small
+                    class="particpant-avatar text-uppercase p-1 waiting-to-join"
+                    ngClass="participant-color-1"
+                    >{{
+                      splitPartcipantName(meetingService.userParticipantName)
+                    }}</small
+                  >
+                </div>
               </div>
             </div>
+            <div class="pt-4 mt-4 h5">Waiting for others to join</div>
+            <div class="pt-2 mt-2">
+              <button
+                class="btn btn-sm btn-outline-light border-secondary"
+                (click)="openInvitePeopleDialog()"
+              >
+                <i
+                  class="bi bi-share-fill p-1 pe-2 align-middle"
+                  style="font-size: 0.8rem"
+                ></i>
+
+                <small> Invite People </small>
+              </button>
+            </div>
+            <!-- <div
+              class="mt-4 text-secondary text-center px-4 py-3 rounded-3"
+              style="background-color: #dddddd05"
+            >
+              <div class="h6 pb-2">
+                <strong>Invite people</strong>
+              </div>
+              <div>
+                <small>Meeting ID</small>
+
+                <span class="fw-bold ps-2 text-decoration-underline">{{
+                  meetingService.meetingId
+                }}</span>
+                <button
+                  class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-2 mb-1"
+                  (click)="copyToClipboard('meetingIDCopied')"
+                >
+                  <i
+                    class="bi px-1 align-middle"
+                    [ngClass]="
+                      meetingCopy.meetingIDCopied
+                        ? 'bi-check2-circle fw-bold'
+                        : 'bi-copy'
+                    "
+                    style="font-size: 0.9rem"
+                  ></i>
+                </button>
+              </div>
+              <div>
+                <small>Meeting URL</small>
+
+                <span class="fw-bold ps-2 text-decoration-underline"
+                  >http://localhost:4200/meeting/{{
+                    meetingService.meetingId
+                  }}</span
+                >
+                <button
+                  class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-2"
+                  (click)="copyToClipboard('meetingURLCopied')"
+                >
+                  <i
+                    class="bi px-1 align-middle"
+                    [ngClass]="
+                      meetingCopy.meetingURLCopied
+                        ? 'bi-check2-circle fw-bold'
+                        : 'bi-copy'
+                    "
+                    style="font-size: 0.9rem"
+                  ></i>
+                </button>
+              </div>
+            </div> -->
           </div>
+
+          <!-- Participant tiles -->
+          <ng-template #participantTiles>
+            <div
+              *ngFor="let peerParticipant of currPeerPartcipants"
+              [style.height]="videoTileHeight + 'px'"
+              [style.width]="videoTileWidth + 'px'"
+              style="position: relative"
+            >
+              <!-- Emoji Reaction Overlap Section -->
+              <div
+                *ngIf="peerParticipant.emojiReacted"
+                class="elementToFadeInAndOut display-2 text-center"
+              >
+                {{ peerParticipant.emojiReaction }}
+              </div>
+
+              <!-- Partcipant Video Enabled Section -->
+              <ng-container
+                *ngIf="
+                  peerParticipant.videoEnabled &&
+                    peerParticipant.connection.status ==
+                      connectionStatus.CONNECTED;
+                  else peerVideoDisabledTemplate
+                "
+              >
+                <div
+                  class="mt-1 ms-1 shadow d-inline-block p-1 rounded-3 border border-3"
+                  [ngClass]="
+                    peerParticipant.connection.audioReceiver?.getSynchronizationSources()[0]
+                      ?.audioLevel! > 0.005
+                      ? ' border-speaking'
+                      : peerParticipant.handRaised
+                      ? ' border-warning hand-raised-avatar'
+                      : 'border-transparent'
+                  "
+                >
+                  <div
+                    class="bottom-left p-1 px-2 rounded-pill text-light shadow ms-3 mb-1"
+                  >
+                    <i
+                      *ngIf="peerParticipant.handRaised"
+                      class="bi bi-hand-index-thumb-fill text-warning pe-1"
+                    ></i>
+                    <i
+                      class="button-icon bi pe-2"
+                      [ngClass]="
+                        peerParticipant.micEnabled
+                          ? 'bi-mic-fill'
+                          : 'bi-mic-mute-fill'
+                      "
+                    ></i>
+                    <small>{{ peerParticipant.participantName }}</small>
+                  </div>
+                  <video
+                    class="rounded-1"
+                    [style.height]="videoTileHeight + 'px'"
+                    [style.width]="videoTileWidth + 'px'"
+                    [srcObject]="peerParticipant.connection.remoteMediaStream"
+                    [autoplay]="true"
+                  ></video>
+                </div>
+              </ng-container>
+
+              <!-- Partcipant Video Disabled Section -->
+              <ng-template #peerVideoDisabledTemplate>
+                <div
+                  class="text-light pt-2 d-flex align-items-center justify-content-center"
+                  [style.height]="videoTileHeight + 'px'"
+                  [style.width]="videoTileWidth + 'px'"
+                >
+                  <div>
+                    <div style="position: relative">
+                      <div
+                        *ngIf="
+                          peerParticipant.connection.status ==
+                          connectionStatus.NEW
+                        "
+                        class="connecting text-light d-flex justify-content-center rounded-circle"
+                      >
+                        <div class="align-self-center">Connecting...</div>
+                      </div>
+                      <div
+                        class="text-center rounded-circle border border-3"
+                        [ngClass]="
+                          peerParticipant.connection.audioReceiver?.getSynchronizationSources()[0]
+                            ?.audioLevel! > 0.005
+                            ? ' border-speaking'
+                            : peerParticipant.handRaised
+                            ? ' border-warning hand-raised-avatar'
+                            : 'border-transparent'
+                        "
+                      >
+                        <div>
+                          <small
+                            class="particpant-avatar text-uppercase p-1"
+                            ngClass="participant-color-{{
+                              (peerParticipant.roll % 5) + 1
+                            }}  {{
+                              peerParticipant.connection.status ==
+                              connectionStatus.CONNECTED
+                                ? 'box-shadow-default'
+                                : ''
+                            }} "
+                            >{{
+                              splitPartcipantName(
+                                peerParticipant.participantName
+                              )
+                            }}</small
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-3 rounded-2 text-light text-center me-2">
+                      <i
+                        *ngIf="peerParticipant.handRaised"
+                        class="bi bi-hand-index-thumb-fill text-warning pe-1"
+                      ></i>
+                      <i
+                        class="button-icon bi pe-2"
+                        [ngClass]="
+                          peerParticipant.micEnabled
+                            ? 'bi-mic-fill'
+                            : 'bi-mic-mute-fill'
+                        "
+                      ></i>
+                      <small>{{ peerParticipant.participantName }}</small>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </ng-template>
         </div>
         <!-- <mat-grid-list cols="1" rowHeight="4:3">
           <mat-grid-tile class="rounded-1">
@@ -161,15 +336,66 @@
       </div>
     </div>
     <div class="footer text-secondary" style="position: relative">
-      <small> Meeting URL: www.hhtppasdasd/yvfvyiibCB </small>
+      <!-- <span>
+        <span class="ps-3">
+          <i
+            class="bi px-1 align-middle"
+            [ngClass]="
+              meetingCopy.meetingIDCopied
+                ? 'bi-check2-circle fw-bold'
+                : 'bi-copy'
+            "
+            style="font-size: 0.8rem"
+          ></i>
+          <small>Meeting ID</small>
+          <button
+            class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-1 mb-1"
+            (click)="copyToClipboard('meetingIDCopied')"
+          >
+            <i
+              class="bi px-1 align-middle"
+              [ngClass]="
+                meetingCopy.meetingIDCopied
+                  ? 'bi-check2-circle fw-bold'
+                  : 'bi-copys'
+              "
+              style="font-size: 0.8rem"
+            ></i>
+          </button>
+        </span>
+        <span class="ps-3">
+          <small>Meeting URL</small>
+          <button
+            class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-1 mb-1"
+            (click)="copyToClipboard('meetingIDCopied')"
+          >
+            <i
+              class="bi px-1 align-middle"
+              [ngClass]="
+                meetingCopy.meetingIDCopied
+                  ? 'bi-check2-circle fw-bold'
+                  : 'bi-copy'
+              "
+              style="font-size: 0.8rem"
+            ></i>
+          </button>
+        </span>
+      </span> -->
       <div
-        class="bottom-right-video p-1 bg-dark-1 border border-2"
-        [ngClass]="
-          meetingService.isRaisedHand ? 'border-warning' : 'border-dark'
-        "
+        class="bottom-right-video bg-dark-1 border border-2"
+        [ngClass]="meetingService.isRaisedHand ? 'border-info' : 'border-dark'"
       >
         <div style="position: relative">
-          <span class="bottom-left p-1 px-2 rounded-pill text-light shadow">
+          <div
+            *ngIf="meetingService.userEmojiReacted"
+            class="elementToFadeInAndOut display-3 text-center"
+          >
+            {{ meetingService.userEmojiReaction }}
+          </div>
+
+          <span
+            class="bottom-left p-1 px-2 rounded-pill text-light shadow mb-1"
+          >
             <i
               *ngIf="meetingService.isRaisedHand"
               class="bi bi-hand-index-thumb-fill text-warning pe-1"

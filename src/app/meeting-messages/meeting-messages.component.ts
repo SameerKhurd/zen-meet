@@ -1,6 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { Message, MessagingService } from "../services/messaging.service";
 import { MeetingService } from "../services/meeting.service";
+import { MatDialog } from "@angular/material/dialog";
+import { EmojiPickerComponent } from "../emoji-picker/emoji-picker.component";
 
 @Component({
   selector: "app-meeting-messages",
@@ -13,11 +15,27 @@ export class MeetingMessagesComponent {
 
   constructor(
     public messagingService: MessagingService,
-    public meetingService: MeetingService
+    public meetingService: MeetingService,
+    public dialog: MatDialog
   ) {}
 
   onClose() {
+    this.messagingService.updateLastUserReadTimeStamp();
     this.meetingSideSection.section = "hide";
+  }
+
+  openEmojiDialog() {
+    const dialogRef = this.dialog.open(EmojiPickerComponent, {
+      data: { emoji: "" },
+    });
+
+    dialogRef
+      .afterClosed()
+      .subscribe((result: { emoji: string } | undefined) => {
+        if (result) {
+          this.userMessage += result.emoji;
+        }
+      });
   }
 
   onSendMessage() {
@@ -29,20 +47,31 @@ export class MeetingMessagesComponent {
       status: "sending",
       sendTime: new Date(),
     };
-    console.log(newUserMessage);
+
     this.messagingService
       .sendMessage(this.meetingService.meetingId, newUserMessage)
       .then(() => {
-        newUserMessage.status = "not-send";
-        console.log(newUserMessage);
+        newUserMessage.status = "sent";
       })
       .catch((er: any) => {
         newUserMessage.status = "not-send";
-        console.log(newUserMessage, er);
       });
     this.userMessage = "";
   }
 
+  onRetryMessage(userMessage: Message) {
+    userMessage.status = "sending";
+    userMessage.sendTime = new Date();
+
+    this.messagingService
+      .retryMessage(this.meetingService.meetingId, userMessage)
+      .then(() => {
+        userMessage.status = "sent";
+      })
+      .catch((er: any) => {
+        userMessage.status = "not-send";
+      });
+  }
 
   splitPartcipantName(participantName: string): string {
     participantName = participantName.trim();

@@ -20,7 +20,7 @@ export class MessagesChannel {
     participantId: string,
     participantName: string,
     content: string,
-    type: "message"
+    type: "message" | "reaction"
   ): Promise<void> {
     await this.messageCollectionService.addMessage(
       meetingId,

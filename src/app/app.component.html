@@ -1,4 +1,4 @@
-<nav class="navbar sticky-top cust-bg-primary navbar-expand-lg navbar-dark ">
+<nav class="navbar sticky-top cust-bg-primary navbar-expand-lg navbar-dark">
   <div class="container-fluid">
     <a
       class="navbar-brand text-secondary"
@@ -6,14 +6,19 @@
       title="Go to home"
     >
       <span class="h6">
-        <i
-          class="pi pi-angle-double-up text-warning align-middle pe-1"
-          style="font-size: 1.5rem"
-        ></i>
-        <span class="title-algo text-light fw-light"></span>
-        <span class="title-blitz text-warning fwbold">
-          {{ "{" }}echo RTC{{ "}" }}
-        </span>
+        <div class="ps-2">
+          <i
+            class="bi bi-camera-video text-light p-0 px-1 rounded-2 bg-danger align-middle"
+            style="
+              font-size: 1.2rem;
+              border: 1px solid rgb(144, 50, 0);
+              color: rgb(255, 211, 211);
+            "
+          ></i>
+          <span class="ps-2 text-danger align-middle fs-5">
+            <strong>ZenMeet</strong>
+          </span>
+        </div>
       </span>
     </a>
     <button
@@ -29,7 +34,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item ps-4">
+        <li class="nav-item ps-4 align-middle">
           <a
             class="nav-link"
             aria-current="page"
@@ -38,7 +43,7 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
           >
-            <span class="font-sm">Problems</span>
+            <span class="font-sm">Join now</span>
           </a>
         </li>
         <li class="nav-item ps-2">
@@ -50,23 +55,11 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
           >
-            <span class="font-sm"> Top 10 Problems</span>
-          </a>
-        </li>
-        <li class="nav-item ps-2">
-          <a
-            class="nav-link"
-            aria-current="page"
-            title="Go to all problems"
-            routerLink="/problems/top-25"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <span class="font-sm"> Top 25 Problems</span>
+            <span class="font-sm"> New meeting</span>
           </a>
         </li>
       </ul>
-      <form class="d-flex">
+      <!-- <form class="d-flex">
         <div class="font-sm align-middle pt-1 pe-3 me-3 text-light border-end">
           <a
             class="fw-s a-link text-light"
@@ -96,7 +89,7 @@
         <div class="font-sm align-middle pt-1">
           <small> Logged in as <strong></strong> </small>
         </div>
-      </form>
+      </form> -->
     </div>
   </div>
 </nav>

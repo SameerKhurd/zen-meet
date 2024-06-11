@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@ctrl/ngx-emoji-mart": "^9.2.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "rxjs": "~7.8.0",

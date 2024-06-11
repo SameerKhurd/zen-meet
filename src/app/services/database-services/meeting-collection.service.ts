@@ -4,19 +4,11 @@ import {
   Firestore,
   addDoc,
   collection,
-  getDocs,
-  setDoc,
-  updateDoc,
   getDoc,
-  onSnapshot,
-  query,
   doc,
   CollectionReference,
-  DocumentSnapshot,
   Timestamp,
   DocumentData,
-  DocumentChange,
-  QuerySnapshot,
 } from "@angular/fire/firestore";
 
 export class Collections {
@@ -28,11 +20,6 @@ export class Collections {
 export interface MeetingDoc {
   meetingName: string;
   startTime: Timestamp;
-}
-
-export interface ParticipantDoc {
-  participantName: string;
-  participantId: string;
 }
 
 @Injectable({
