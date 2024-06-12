@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "zenmeet",
+    "public": "dist/zen-meet-web-app",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
