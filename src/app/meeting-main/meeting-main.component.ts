@@ -11,7 +11,7 @@ import { MatDialog } from "@angular/material/dialog";
   styleUrls: ["./meeting-main.component.scss"],
 })
 export class MeetingMainComponent {
-  joinedMeeting = !false;
+  joinedMeeting = false;
   isInvalidName = false;
   userMeetingId = "";
   status: "new" | "not-found" | "loading" | "error" = "new";

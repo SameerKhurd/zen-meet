@@ -61,14 +61,14 @@ export class DeviceSettingsComponent implements AfterViewInit {
   }
 
   async onCameraSelect() {
+    this.mediaService.stopCamera();
     await this.mediaService.startCamera();
     this.meetingService.updateConnectionVideoStream();
   }
 
-
   async onMicSelect() {
+    this.mediaService.stopMic();
     await this.mediaService.startMic();
     this.meetingService.updateConnectionVideoStream();
   }
-
 }
