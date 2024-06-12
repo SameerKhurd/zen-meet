@@ -1,1 +1,11 @@
-{}
+{
+  "hosting": {
+    "site": "zenmeet",
+    "public": "dist/angular-zoom",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
