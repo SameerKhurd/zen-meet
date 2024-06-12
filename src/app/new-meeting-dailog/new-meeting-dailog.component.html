@@ -4,7 +4,10 @@
   <div class="d-flex p-2 pb-0 pt-4 justify-content-between">
     <div></div>
     <div class="h5 fw-bold">
-      <i class="bi bi-plus-lg pe-2 align-middle" style="font-size: 1.3rem"></i>
+      <i
+        class="bi bi-camera-video pe-2 align-middle"
+        style="font-size: 1.3rem"
+      ></i>
       New Meeting
     </div>
 
@@ -12,12 +15,13 @@
       <button
         class="btn btn-sm btn-outline-light border-0 p-0 mb-2"
         (click)="onClose()"
+        [disabled]="status === 'loading'"
       >
         <i class="bi bi-x-lg px-1" style="font-size: 1rem"></i>
       </button>
     </div>
   </div>
-  <div class="text-secondary text-center pb-3">
+  <div class="text-light text-center pb-3">
     Enter the meeting details to start new meeting
   </div>
   <br />
@@ -26,17 +30,41 @@
     <div class="align-self-center py-1"><strong>Meeting Name</strong></div>
     <input
       type="text"
-      class="form-control bg-dark cust-text-secondary my-2 border-secondary"
+      class="form-control bg-dark text-light my-2"
+      [ngClass]="isInvalidName ? 'border-danger' : 'border-secondary'"
       placeholder="Enter Your Meeting Name"
       [(ngModel)]="userMeetingName"
     />
+    <span *ngIf="isInvalidName" class="text-danger">
+      <i class="bi bi-exclamation-circle px-1"></i> Please provide valid meeting
+      name &nbsp;</span
+    >
   </div>
   <br />
   <div class="px-3 py-3 d-flex justify-content-center pb-4">
-    <div class="w-100 pb-2">
-      <button class="btn btn-danger w-100" (click)="onClose()">
-        Start New Meeting
-      </button>
+    <div class="w-100">
+      <div class="text-center pb-4" *ngIf="status === 'error'">
+        <span class="text-danger">
+          <i class="bi bi-exclamation-circle px-1"></i> Error occured while
+          starting new meeting. <br />Please try again after some time.
+          &nbsp;</span
+        >
+      </div>
+
+      <div class="pb-2">
+        <button
+          class="btn btn-danger w-100"
+          (click)="onStartNewMeeting()"
+          [disabled]="status === 'loading'"
+        >
+          <div
+            *ngIf="status === 'loading'; else validButton"
+            class="mx-2 spinner-border cust-text-secondary spinner-border-sm"
+            role="status"
+          ></div>
+          <ng-template #validButton>Start New Meeting</ng-template>
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import {
   MediaService,
   mediaStatus,
 } from "../services/media.service";
+import { MeetingService } from "../services/meeting.service";
 @Component({
   selector: "app-device-settings",
   templateUrl: "./device-settings.component.html",
@@ -17,11 +18,13 @@ export class DeviceSettingsComponent implements AfterViewInit {
   };
   mediaStatus = mediaStatus;
 
-  constructor(public mediaService: MediaService) {}
+  constructor(
+    public mediaService: MediaService,
+    public meetingService: MeetingService
+  ) {}
 
   ngAfterViewInit(): void {
     this.getDeviceMedia();
-    //this.meetingService.startNewMeeting("new meeting")
   }
 
   getDeviceMedia(): void {
@@ -37,19 +40,35 @@ export class DeviceSettingsComponent implements AfterViewInit {
     });
   }
 
-  onCameraToggle(): void {
-    this.mediaService.cameraStatus === mediaStatus.ENABLED
-      ? this.mediaService.stopCamera()
-      : this.mediaService.startCamera();
+  async onCameraToggle(): Promise<void> {
+    if (this.mediaService.cameraStatus === mediaStatus.ENABLED) {
+      this.mediaService.stopCamera();
+    } else {
+      await this.mediaService.startCamera();
+      this.meetingService.updateConnectionVideoStream();
+    }
+    this.meetingService.updatePartcipant();
   }
 
-  onMicToggle() {
-    this.mediaService.micStatus === mediaStatus.ENABLED
-      ? this.mediaService.stopMic()
-      : this.mediaService.startMic();
+  async onMicToggle() {
+    if (this.mediaService.micStatus === mediaStatus.ENABLED) {
+      this.mediaService.stopMic();
+    } else {
+      await this.mediaService.startMic();
+      this.meetingService.updateConnectionAudioStream();
+    }
+    this.meetingService.updatePartcipant();
   }
 
-  onCameraSelect() {
-    this.mediaService.startCamera();
+  async onCameraSelect() {
+    await this.mediaService.startCamera();
+    this.meetingService.updateConnectionVideoStream();
   }
+
+
+  async onMicSelect() {
+    await this.mediaService.startMic();
+    this.meetingService.updateConnectionVideoStream();
+  }
+
 }

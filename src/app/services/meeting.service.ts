@@ -252,6 +252,14 @@ export class MeetingService {
     }
   }
 
+  leaveMeeting() {
+    for (const peerPartcipant of this.peerPartcipants) {
+      if (peerPartcipant.connection.status == connectionStatus.CONNECTED) {
+        peerPartcipant.connection.closeConnection();
+      }
+    }
+  }
+
   async updatePartcipant(): Promise<void> {
     await this.participantChannel.publishParticipantChanges(
       this.meetingId,

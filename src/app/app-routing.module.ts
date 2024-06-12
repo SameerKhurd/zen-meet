@@ -1,9 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HomeComponent } from "./home/home.component";
-import { MeetingStartComponent } from "./meeting-start/meeting-start.component";
-import { MeetingJoinComponent } from "./meeting-join/meeting-join.component";
 import { MeetingMainComponent } from "./meeting-main/meeting-main.component";
+import { EndMeetingComponent } from "./end-meeting/end-meeting.component";
 
 const routes: Routes = [
   {
@@ -14,12 +13,8 @@ const routes: Routes = [
         path: "meeting",
         children: [
           {
-            path: "start",
-            component: MeetingStartComponent,
-          },
-          {
-            path: "join",
-            component: MeetingJoinComponent,
+            path: "end",
+            component: EndMeetingComponent,
           },
           {
             path: ":meetingId",

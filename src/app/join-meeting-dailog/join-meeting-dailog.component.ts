@@ -8,7 +8,9 @@ import { ActivatedRoute, Router } from "@angular/router";
   styleUrls: ["./join-meeting-dailog.component.scss"],
 })
 export class JoinMeetingDailogComponent {
-  userMeetingId: string = "tIQSBsmGU8tWBTvwj6IQ";
+  userMeetingId: string = "";
+  isInvalidId = false;
+
   constructor(
     public dialogRef: MatDialogRef<JoinMeetingDailogComponent>,
     private router: Router,
@@ -19,11 +21,18 @@ export class JoinMeetingDailogComponent {
     this.dialogRef.close();
   }
 
+  private validateUserMeetingId() {
+    this.userMeetingId = this.userMeetingId.trim();
+    this.isInvalidId = this.userMeetingId.length === 0;
+  }
+
   onJoin(): void {
-    this.dialogRef.disableClose = true;
-    this.router.navigate(["meeting", this.userMeetingId], {
-      relativeTo: this.activatedRoute,
-    });
-    this.dialogRef.close();
+    this.validateUserMeetingId();
+    if (!this.isInvalidId) {
+      this.router.navigate(["meeting", this.userMeetingId], {
+        relativeTo: this.activatedRoute,
+      });
+      this.dialogRef.close();
+    }
   }
 }

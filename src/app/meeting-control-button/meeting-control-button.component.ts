@@ -7,6 +7,7 @@ import { Message, MessagingService } from "../services/messaging.service";
 import { connectionStatus } from "../services/connection.service";
 import { DeviceSettingsDailogComponent } from "../device-settings-dailog/device-settings-dailog.component";
 import { InvitePeopleDailogComponent } from "../invite-people-dailog/invite-people-dailog.component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-meeting-control-button",
@@ -23,6 +24,7 @@ export class MeetingControlButtonComponent implements OnInit {
     public mediaService: MediaService,
     public meetingService: MeetingService,
     public messagingService: MessagingService,
+    private router: Router,
     public dialog: MatDialog
   ) {}
 
@@ -104,6 +106,11 @@ export class MeetingControlButtonComponent implements OnInit {
     this.meetingService.isRaisedHand
       ? this.meetingService.userLowerHand()
       : this.meetingService.userRaiseHand();
+  }
+
+  onLeaveMeeting() {
+    this.meetingService.leaveMeeting();
+    this.router.navigate(["meeting", "end"]);
   }
 
   async onCameraToggle(): Promise<void> {

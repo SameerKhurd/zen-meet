@@ -2,6 +2,8 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { Meeting, MeetingService } from "../services/meeting.service";
+import { InvitePeopleDailogComponent } from "../invite-people-dailog/invite-people-dailog.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-meeting-main",
@@ -10,30 +12,64 @@ import { Meeting, MeetingService } from "../services/meeting.service";
 })
 export class MeetingMainComponent {
   joinedMeeting = !false;
+  isInvalidName = false;
+  userMeetingId = "";
+  status: "new" | "not-found" | "loading" | "error" = "new";
+  joinStatus: "new" | "loading" | "error" = "new";
 
-  constructor(route: ActivatedRoute, public meetingService: MeetingService) {
+  constructor(
+    route: ActivatedRoute,
+    public meetingService: MeetingService,
+    public dialog: MatDialog
+  ) {
     let meetingId = route.snapshot.paramMap.get("meetingId");
     meetingId = meetingId ? meetingId : "";
+    this.userMeetingId = meetingId;
     //this.meetingService.setMeetingDetails(meetingId, "temp meeting name");
-    // this.getMeetingDetails(meetingId);
+    this.getMeetingDetails(meetingId);
+  }
+
+  openInvitePeopleDialog() {
+    this.dialog.open(InvitePeopleDailogComponent);
+  }
+
+  private validateUserParticipantName() {
+    this.meetingService.userParticipantName =
+      this.meetingService.userParticipantName.trim();
+    this.isInvalidName = this.meetingService.userParticipantName.length === 0;
   }
 
   getMeetingDetails(meetingId: string) {
+    this.status = "loading";
     this.meetingService
       .getMeetingDetails(meetingId)
       .then((meetingDetails: Meeting | undefined) => {
         if (meetingDetails) {
+          this.status = "new";
           this.meetingService.setMeetingDetails(
             meetingId,
             meetingDetails.meetingName
           );
+        } else {
+          this.status = "not-found";
         }
+      })
+      .catch(() => {
+        this.status = "error";
       });
   }
 
   onJoinMeeting() {
-    this.meetingService.joinMeeting().then(() => {
-      this.joinedMeeting = true;
-    });
+    this.validateUserParticipantName();
+    if (!this.isInvalidName) this.joinStatus = "loading";
+    this.meetingService
+      .joinMeeting()
+      .then(() => {
+        this.joinStatus = "new";
+        this.joinedMeeting = true;
+      })
+      .catch(() => {
+        this.joinStatus = "error";
+      });
   }
 }

@@ -2,71 +2,190 @@
   <div class="container cust-text-secondary py-3 my-2">
     <div class="d-flex justify-content-center">
       <div class="w-75">
-        <div class="bg-dark-1 cust-border p-3 rounded-top">
-          <div class="ms-2 ps-4 border-start border-3 border-danger">
-            <div class="d-flex justify-content-between">
-              <div>
-                <div class="h6 text-ligsht">
-                  <strong> Join Meeting</strong>
-                </div>
-                <div class="h4 text-light">
-                  <strong>{{ meetingService.meetingName }}</strong>
-                </div>
+        <ng-container [ngSwitch]="status">
+          <ng-container *ngSwitchCase="'error'">
+            <div class="bg-dark-1 text-center rounded-1 cust-border">
+              <div class="h4 pt-4 text-light">
+                <strong> Join Meeting</strong>
               </div>
-              <div>
-                <button class="btn btn-outline-light border-secondary border-0">
-                  <i
-                    class="bi bi-share-fill p-1 pe-2 align-middle"
-                    style="font-size: 0.8rem"
-                  ></i>
-
-                  <small> Share Invite </small>
-                </button>
-              </div>
-            </div>
-
-            <!-- <div class="">
-              <strong>Meeting ID</strong>
-              <span class="ps-2 cust-text-tertiary">
-                <span>tIQSBsmGU8tWBTvwj6IQ</span>
-              </span>
-            </div> -->
-          </div>
-        </div>
-        <div class="px-3 pt-2 border-1 bg-dark-1 cust-border">
-          <app-device-settings></app-device-settings>
-        </div>
-        <div class="p-3 py-4 mb-4 bg-dark-1 cust-border rounded-bottom">
-          <div class="ms-2 ps-4 border-start border-3 border-danger">
-            <div class="ps-1 h6 text-light">
-              <strong> Enter your details to join the meeting</strong>
-            </div>
-            <div class="ps-1 cust-text-secondary">
-              <strong>Your Name</strong>
-            </div>
-            <div class="pt-2">
-              <div class="d-flex justify-content-between">
-                <div class="col-md-4">
-                  <input
-                    type="text"
-                    class="form-control bg-dark cust-text-secondary border-secondary"
-                    placeholder="Enter Your Name"
-                    [(ngModel)]="meetingService.userParticipantName"
-                  />
+              <div
+                class="cust-text-secondary text-center pb-4"
+                style="margin: 18vh"
+              >
+                <i class="bi bi-emoji-frown" style="font-size: 5rem"></i>
+                <div class="h4 pt-4 text-light">
+                  <strong> Something went wrong!</strong>
                 </div>
-                <div class="col-6">
+
+                <div class="pt-2 cust-text-tertiary">
+                  Error occured while fetching the meeting details. <br />
+                  Please try again after sometime.
+                </div>
+
+                <div class="pt-4 mt-4 cust-text-tertiary">
                   <button
-                    class="btn btn-danger float-end me-2"
+                    class="btn btn-danger border-0"
                     style="min-width: 100px"
-                    (click)="onJoinMeeting()"
+                    (click)="getMeetingDetails(userMeetingId)"
                   >
-                    <small> Join Meeting </small>
+                    <i
+                      class="bi bi-arrow-clockwise pe-2 align-middle"
+                      style="font-size: 1.2rem"
+                    ></i>
+                    <small>Retry </small>
                   </button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'not-found'">
+            <div class="bg-dark-1 text-center rounded-1 cust-border">
+              <div class="h4 pt-4 text-light">
+                <strong> Join Meeting</strong>
+              </div>
+              <div
+                class="cust-text-secondary text-center pb-4"
+                style="margin: 18vh"
+              >
+                <i class="bi bi-cone-striped" style="font-size: 5rem"></i>
+                <div class="h4 pt-4 text-light">
+                  <strong> Meeting Not Found!</strong>
+                </div>
+
+                <div class="pt-2 cust-text-tertiary">
+                  No meeting found with
+                  <strong class="text-light">{{ userMeetingId }}</strong>
+                  meeting ID <br />
+                  Make sure the meeting ID is correct and try again.
+                </div>
+
+                <div class="pt-4 mt-4 cust-text-tertiary">
+                  <a
+                    class="btn btn-danger border-0"
+                    style="min-width: 100px"
+                    routerLink="/"
+                  >
+                    <i
+                      class="bi bi-chevron-left pe-2 align-middle"
+                      style="font-size: 1.2rem"
+                    ></i>
+                    <small> Go to home </small>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'loading'">
+            <div class="bg-dark-1 text-center rounded-1 cust-border">
+              <div class="h4 pt-4 text-light">
+                <strong> Join Meeting</strong>
+              </div>
+              <div
+                class="spinner-border cust-text-secondary text-center"
+                role="status"
+                style="margin-top: 17vh; width: 4rem; height: 4rem"
+              ></div>
+              <div
+                class="cust-text-secondary text-center pt-3"
+                style="margin-bottom: 20vh"
+              >
+                <small>loading meeting details...</small>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'new'">
+            <div class="bg-dark-1 cust-border p-3 rounded-top">
+              <div class="ms-2 ps-4 border-start border-3 border-danger">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <div class="h6 text-ligsht">
+                      <strong> Join Meeting</strong>
+                    </div>
+                    <div class="h4 text-light">
+                      <strong>{{ meetingService.meetingName }}</strong>
+                    </div>
+                  </div>
+                  <div>
+                    <button
+                      class="btn btn-outline-light border-secondary border-0"
+                      (click)="openInvitePeopleDialog()"
+                    >
+                      <i
+                        class="bi bi-share-fill p-1 pe-2 align-middle"
+                        style="font-size: 0.8rem"
+                      ></i>
+
+                      <small> Share Invite </small>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- <div class="">
+                  <strong>Meeting ID</strong>
+                  <span class="ps-2 cust-text-tertiary">
+                    <span>tIQSBsmGU8tWBTvwj6IQ</span>
+                  </span>
+                </div> -->
+              </div>
+            </div>
+            <div class="px-3 pt-2 border-1 bg-dark-1 cust-border">
+              <app-device-settings></app-device-settings>
+            </div>
+            <div class="p-3 py-4 mb-4 bg-dark-1 cust-border rounded-bottom">
+              <div class="text-center pb-4" *ngIf="joinStatus === 'error'">
+                <span class="text-danger">
+                  <i class="bi bi-exclamation-circle px-1"></i> Error occured
+                  while joining the meeting. <br />Please try again after some
+                  time. &nbsp;</span
+                >
+              </div>
+              <div class="ms-2 ps-4 border-start border-3 border-danger">
+                <div class="ps-1 h6 text-light">
+                  <strong> Enter your details to join the meeting</strong>
+                </div>
+                <div class="ps-1 cust-text-secondary">
+                  <strong>Your Name</strong>
+                </div>
+                <div class="pt-2">
+                  <div class="d-flex justify-content-between">
+                    <div class="col-md-4">
+                      <input
+                        type="text"
+                        class="form-control bg-dark cust-text-secondary"
+                        [ngClass]="
+                          isInvalidName ? 'border-danger' : 'border-secondary'
+                        "
+                        placeholder="Enter Your Name"
+                        [(ngModel)]="meetingService.userParticipantName"
+                      />
+                      <div *ngIf="isInvalidName" class="text-danger pt-2">
+                        <i class="bi bi-exclamation-circle px-1"></i> Please
+                        provide valid name &nbsp;
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <button
+                        class="btn btn-danger float-end me-2"
+                        style="min-width: 100px"
+                        (click)="onJoinMeeting()"
+                        [disabled]="joinStatus === 'loading'"
+                      >
+                        <div
+                          *ngIf="joinStatus === 'loading'; else validButton"
+                          class="mx-2 spinner-border text-light spinner-border-sm"
+                          role="status"
+                        ></div>
+                        <ng-template #validButton
+                          ><small> Join Meeting </small></ng-template
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
       </div>
     </div>
   </div>

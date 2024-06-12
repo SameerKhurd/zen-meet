@@ -39,6 +39,7 @@ import { DeviceSettingsDailogComponent } from './device-settings-dailog/device-s
 import { InvitePeopleDailogComponent } from './invite-people-dailog/invite-people-dailog.component';
 import { JoinMeetingDailogComponent } from './join-meeting-dailog/join-meeting-dailog.component';
 import { NewMeetingDailogComponent } from './new-meeting-dailog/new-meeting-dailog.component';
+import { EndMeetingComponent } from './end-meeting/end-meeting.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { NewMeetingDailogComponent } from './new-meeting-dailog/new-meeting-dail
     InvitePeopleDailogComponent,
     JoinMeetingDailogComponent,
     NewMeetingDailogComponent,
+    EndMeetingComponent,
   ],
   imports: [
     BrowserModule,

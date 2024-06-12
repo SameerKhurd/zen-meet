@@ -161,7 +161,9 @@
           </small>
         </div>
         <select
+          (change)="onMicSelect()"
           class="form-select form-select-sm bg-dark cust-text-secondary ms-3 mt-2"
+          [(ngModel)]="this.mediaService.mic"
         >
           <option [value]="mic" *ngFor="let mic of deviceMedia?.mics">
             {{ mic.label }}

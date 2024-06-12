@@ -267,13 +267,16 @@
   position: absolute;
   top: 0;
   border-radius: 12px;
-  border: 2px solid #222;
-  box-shadow: 0 24px 25px 0 rgba(0, 0, 0, 0.144),
-    0 20px 20px 0 rgba(0, 0, 0, 0.1);
 
   //left: calc(50% - 100px);
   opacity: 0;
-  animation: display 12s infinite;
+  animation: display 15s infinite;
+}
+
+.pic-box-shadow {
+  border: 2px solid #212121;
+  box-shadow: 0 24px 25px 0 rgba(0, 0, 0, 0.144),
+    0 20px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
 img:nth-child(2) {
@@ -285,6 +288,6 @@ img:nth-child(3) {
 img:nth-child(4) {
   animation-delay: 9s !important;
 }
-// img:nth-child(5) {
-//   animation-delay: 8s !important;
-// }
+img:nth-child(5) {
+  animation-delay: 12s !important;
+}

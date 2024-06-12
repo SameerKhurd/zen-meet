@@ -1,0 +1,30 @@
+<div class="d-flex justify-content-center">
+  <div class="text-center" style="margin-top: 25vh">
+    <i class="bi bi-telephone-fill text-light" style="font-size: 4rem"></i>
+
+    <div class="h1 text-light pt-4 mt-4">Thanks for joining!</div>
+    <div class="fs-6 text-secondary">
+      You have successfully left the call. Hope you found it engaging.
+    </div>
+    <div class="pt-4 mt-4">
+      <a class="btn btn-danger mx-2" style="min-width: 150px" routerLink="/">
+        <i
+          class="bi bi-chevron-left pe-2 align-middle"
+          style="font-size: 1.2rem"
+        ></i>
+        <small> Go to home </small>
+      </a>
+      <button
+        class="btn btn-outline-light border-secondary mx-2"
+        style="min-width: 150px"
+        (click)="onReJoin()"
+      >
+        <i
+          class="bi bi-telephone-forward-fill pe-3 align-middle"
+          style="font-size: 1.2rem"
+        ></i
+        >Re-join
+      </button>
+    </div>
+  </div>
+</div>

@@ -5,7 +5,7 @@
     <div></div>
     <div class="h5 fw-bold">
       <i
-        class="bi bi-box-arrow-in-right pe-2 align-middle"
+        class="bi bi-camera-video pe-2 align-middle"
         style="font-size: 1.6rem"
       ></i>
       Join Meeting
@@ -20,7 +20,7 @@
       </button>
     </div>
   </div>
-  <div class="text-secondary text-center pb-3">
+  <div class="text-light text-center pb-3">
     Enter the meeting details to join the meeting
   </div>
   <br />
@@ -29,10 +29,15 @@
     <div class="align-self-center py-1"><strong>Meeting ID</strong></div>
     <input
       type="text"
-      class="form-control bg-dark cust-text-secondary my-2 border-secondary"
+      class="form-control bg-dark text-light my-2"
+      [ngClass]="isInvalidId ? 'border-danger' : 'border-secondary'"
       placeholder="Enter Your Meeting ID"
       [(ngModel)]="userMeetingId"
     />
+    <span *ngIf="isInvalidId" class="text-danger">
+      <i class="bi bi-exclamation-circle px-1"></i> Please provide valid meeting
+      ID &nbsp;</span
+    >
   </div>
   <br />
   <div class="px-3 py-3 d-flex justify-content-center pb-4">

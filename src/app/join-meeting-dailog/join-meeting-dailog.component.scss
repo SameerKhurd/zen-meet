@@ -3,10 +3,6 @@
   width: 400px;
 }
 
-.cust-text-secondary {
-  color: #bbb;
-}
-
-.cust-text-secondary::placeholder {
+input::placeholder {
   color: #666;
 }
