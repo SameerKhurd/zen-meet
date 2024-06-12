@@ -1,8 +1,8 @@
 import { AfterViewInit, Component } from "@angular/core";
-import { AuthService } from "./services/auth.service";
 import { MatDialog } from "@angular/material/dialog";
-import { JoinMeetingDailogComponent } from "./join-meeting-dailog/join-meeting-dailog.component";
-import { NewMeetingDailogComponent } from "./new-meeting-dailog/new-meeting-dailog.component";
+import { JoinMeetingDailogComponent } from "./dailog-modals/join-meeting-dailog/join-meeting-dailog.component";
+import { NewMeetingDailogComponent } from "./dailog-modals/new-meeting-dailog/new-meeting-dailog.component";
+import { AuthService } from "./services/auth-service/auth.service";
 
 @Component({
   selector: "app-root",
