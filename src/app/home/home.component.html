@@ -1,10 +1,10 @@
 <div *ngIf="!outlet.isActivated">
-  <div class="container">
+  <div class="container-xxl">
     <div class="row">
-      <div class="col-6">
+      <div class="col-6 fade-in-left">
         <div
-          class="mt-4 px-4 text-secondary h2 d-inline-block"
-          style="height: 30px"
+          class="mt-4 text-secondary h2 d-block"
+          style="height: 30px; width: 100%"
         >
           <div class="position-relative">
             <div class="content">
@@ -12,16 +12,16 @@
                 <p class="content__container__text">let's</p>
 
                 <ul class="content__container__list">
-                  <li class="content__container__list__item">connect</li>
-                  <li class="content__container__list__item">focus</li>
-                  <li class="content__container__list__item">collaborate</li>
-                  <li class="content__container__list__item">meet</li>
+                  <li class="content__container__list__item">connect on</li>
+                  <li class="content__container__list__item">focus on</li>
+                  <li class="content__container__list__item">collaborate on</li>
+                  <li class="content__container__list__item">meet on</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-        <div class="px-4 pt-2">
+        <div class="py-2">
           <i
             class="bi bi-camera-video text-light p-2 px-3 rounded-4 bg-danger align-middle"
             style="
@@ -34,15 +34,61 @@
             <strong>ZenMeet</strong>
           </span>
         </div>
-        <div class="px-4 pt-3 display-3 fw-bold text-light">
+        <div class="pe-4 py-2 display-3 fw-bold text-light">
           Online Real-Time Communication Platform
         </div>
-        <div class="px-4 pt-3 fs-5 lh-base" style="color: #ccc">
+        <div
+          class="me-4 mt-3 pe-4 fs-5 lh-base border-dark fade-in-left"
+          style="color: #aaa"
+        >
           Enjoy video calls, audio calls, messaging, and interactive features
-          like reactions and raise hand with ZenMeet
+          like reactions and raise hand with multiple participants on ZenMeet
         </div>
       </div>
-      <div class="col-6"></div>
+      <div class="col-6">
+        <div class="pic-ctn">
+          <img src="assets/1.png" alt="" class="pic d-block w-100" />
+          <img src="assets/2.png" alt="" class="pic d-block w-100" />
+          <img src="assets/3.png" alt="" class="pic d-block w-100" />
+          <img src="assets/4.png" alt="" class="pic d-block w-100" />
+        </div>
+      </div>
+    </div>
+    <div class="row pt-4">
+      <div class="col-6 fade-in-left">
+        <div
+          class="me-4 py-1 ps-3 pe-4 fade-in-left text-secondary border-start border-3 border-secondary"
+        >
+          <span>
+            <strong>Disclaimer: </strong>
+            ZenMeet is a real-time communication platform designed for seamless
+            and interactive online meetings. The platform uses WebRTC for video
+            and audio calls, public STUN servers for establishing connection
+            between peers and custom Pub-Sub channels for messaging and sharing
+            connections details.</span
+          >
+        </div>
+      </div>
+      <div class="col-6 fade-in-right">
+        <div class="ps-3 text-center">
+          <button
+            class="btn btn-light"
+            style="min-width: 40%"
+            (click)="openJoinMeetingDialog()"
+          >
+            Join Meeting
+          </button>
+          <span class="mx-4 border-2 border-start border-secondary py-2">
+          </span>
+          <button
+            class="btn btn-danger"
+            style="min-width: 40%"
+            (click)="openNewMeetingDialog()"
+          >
+            Start New Meeting
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

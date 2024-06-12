@@ -31,7 +31,7 @@ export class AuthService {
       : randomIDGenerator();
     this.meetingService.userParticipantName = userParticipantName
       ? userParticipantName
-      : "Sameer Khurd";
+      : "";
 
     this.meetingService.storeUserDetailsLocally();
   }

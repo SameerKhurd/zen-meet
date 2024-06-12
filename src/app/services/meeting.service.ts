@@ -36,49 +36,11 @@ export class MeetingService {
   meetingId = "";
   meetingName = "";
   userParticipantId: string = "";
-  userParticipantName = "Sameer K";
+  userParticipantName = "";
   isRaisedHand = false;
   participantRaisedHandCount = 0;
   joinMeetingLoading = false;
   peerPartcipants: PeerParticipant[] = [];
-  t = [
-    {
-      participantName: "Abhishek P",
-      participantId: "Afsfqwf",
-      roll: 2,
-      handRaised: false,
-      emojiReacted: false,
-      videoEnabled: true,
-      micEnabled: true,
-    },
-    {
-      participantName: "Chaya Chitrakar P",
-      participantId: "qweqw",
-      roll: 3,
-      handRaised: false,
-      emojiReacted: false,
-      videoEnabled: !true,
-      micEnabled: !true,
-    },
-    {
-      participantName: "Sagar",
-      participantId: "qwee",
-      roll: 1,
-      handRaised: true,
-      emojiReacted: false,
-      videoEnabled: !true,
-      micEnabled: true,
-    },
-    {
-      participantName: "Vishwadeep",
-      participantId: "qweqwaadsqw",
-      roll: 4,
-      handRaised: false,
-      emojiReacted: false,
-      videoEnabled: true,
-      micEnabled: !true,
-    },
-  ];
   participantCounter: number = 1;
   private participantChannel!: ParticipantChannel;
   partcipantsStyleCodeMap: any = {};

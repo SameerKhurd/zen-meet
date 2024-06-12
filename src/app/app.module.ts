@@ -37,6 +37,8 @@ import { MatMenuModule } from "@angular/material/menu";
 import { DeviceSettingsComponent } from './device-settings/device-settings.component';
 import { DeviceSettingsDailogComponent } from './device-settings-dailog/device-settings-dailog.component';
 import { InvitePeopleDailogComponent } from './invite-people-dailog/invite-people-dailog.component';
+import { JoinMeetingDailogComponent } from './join-meeting-dailog/join-meeting-dailog.component';
+import { NewMeetingDailogComponent } from './new-meeting-dailog/new-meeting-dailog.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import { InvitePeopleDailogComponent } from './invite-people-dailog/invite-peopl
     DeviceSettingsComponent,
     DeviceSettingsDailogComponent,
     InvitePeopleDailogComponent,
+    JoinMeetingDailogComponent,
+    NewMeetingDailogComponent,
   ],
   imports: [
     BrowserModule,

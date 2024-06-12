@@ -1,5 +1,8 @@
 import { AfterViewInit, Component } from "@angular/core";
 import { AuthService } from "./services/auth.service";
+import { MatDialog } from "@angular/material/dialog";
+import { JoinMeetingDailogComponent } from "./join-meeting-dailog/join-meeting-dailog.component";
+import { NewMeetingDailogComponent } from "./new-meeting-dailog/new-meeting-dailog.component";
 
 @Component({
   selector: "app-root",
@@ -8,9 +11,14 @@ import { AuthService } from "./services/auth.service";
 })
 export class AppComponent {
   title = "angular-zoom";
-  name!: string;
-  color: any;
-  age: any;
 
-  constructor(authService: AuthService) {}
+  constructor(authService: AuthService, public dialog: MatDialog) {}
+
+  openJoinMeetingDialog() {
+    this.dialog.open(JoinMeetingDailogComponent);
+  }
+
+  openNewMeetingDialog() {
+    this.dialog.open(NewMeetingDailogComponent);
+  }
 }

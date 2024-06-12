@@ -9,7 +9,7 @@ import { Meeting, MeetingService } from "../services/meeting.service";
   styleUrls: ["./meeting-main.component.scss"],
 })
 export class MeetingMainComponent {
-  joinedMeeting = false;
+  joinedMeeting = !false;
 
   constructor(route: ActivatedRoute, public meetingService: MeetingService) {
     let meetingId = route.snapshot.paramMap.get("meetingId");

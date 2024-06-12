@@ -183,6 +183,7 @@
                       </div>
                       <div
                         class="text-center rounded-circle border border-3"
+                        style="width: 8.35rem; height: 8.35rem"
                         [ngClass]="
                           peerParticipant.connection.audioReceiver?.getSynchronizationSources()[0]
                             ?.audioLevel! > 0.005
@@ -383,7 +384,9 @@
       </span> -->
       <div
         class="bottom-right-video bg-dark-1 border border-2"
-        [ngClass]="meetingService.isRaisedHand ? 'border-info' : 'border-dark'"
+        [ngClass]="
+          meetingService.isRaisedHand ? 'border-warning' : 'border-dark'
+        "
       >
         <div style="position: relative">
           <div

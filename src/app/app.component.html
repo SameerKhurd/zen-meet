@@ -1,21 +1,20 @@
-<nav class="navbar sticky-top cust-bg-primary navbar-expand-lg navbar-dark">
+<nav
+  class="navbar sticky-tops cust-bg-primary navbar-expand-lg navbar-dark"
+  style="border-bottom: 1px solid #252525"
+>
   <div class="container-fluid">
-    <a
-      class="navbar-brand text-secondary"
-      routerLink="/problems"
-      title="Go to home"
-    >
+    <a class="navbar-brand text-secondary" routerLink="/" title="Go to home">
       <span class="h6">
         <div class="ps-2">
           <i
             class="bi bi-camera-video text-light p-0 px-1 rounded-2 bg-danger align-middle"
             style="
-              font-size: 1.2rem;
+              font-size: 1rem;
               border: 1px solid rgb(144, 50, 0);
               color: rgb(255, 211, 211);
             "
           ></i>
-          <span class="ps-2 text-danger align-middle fs-5">
+          <span class="ps-2 text-danger align-middle fs-6">
             <strong>ZenMeet</strong>
           </span>
         </div>
@@ -34,26 +33,20 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item ps-4 align-middle">
+        <li class="nav-item ps-3 align-middle">
           <a
-            class="nav-link"
-            aria-current="page"
-            title="Go to all problems"
-            routerLink="/problems"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link pe-enabled"
+            title="Join Meeting"
+            (click)="openJoinMeetingDialog()"
           >
             <span class="font-sm">Join now</span>
           </a>
         </li>
         <li class="nav-item ps-2">
           <a
-            class="nav-link"
-            aria-current="page"
-            title="Go to all problems"
-            routerLink="/problems/top-10"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link pe-enabled"
+            title="Start New Meeting"
+            (click)="openNewMeetingDialog()"
           >
             <span class="font-sm"> New meeting</span>
           </a>
