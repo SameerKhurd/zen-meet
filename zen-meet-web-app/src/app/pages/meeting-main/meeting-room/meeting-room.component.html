@@ -46,58 +46,6 @@
                 <small> Invite People </small>
               </button>
             </div>
-            <!-- <div
-              class="mt-4 text-secondary text-center px-4 py-3 rounded-3"
-              style="background-color: #dddddd05"
-            >
-              <div class="h6 pb-2">
-                <strong>Invite people</strong>
-              </div>
-              <div>
-                <small>Meeting ID</small>
-
-                <span class="fw-bold ps-2 text-decoration-underline">{{
-                  meetingService.meetingId
-                }}</span>
-                <button
-                  class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-2 mb-1"
-                  (click)="copyToClipboard('meetingIDCopied')"
-                >
-                  <i
-                    class="bi px-1 align-middle"
-                    [ngClass]="
-                      meetingCopy.meetingIDCopied
-                        ? 'bi-check2-circle fw-bold'
-                        : 'bi-copy'
-                    "
-                    style="font-size: 0.9rem"
-                  ></i>
-                </button>
-              </div>
-              <div>
-                <small>Meeting URL</small>
-
-                <span class="fw-bold ps-2 text-decoration-underline"
-                  >http://localhost:4200/meeting/{{
-                    meetingService.meetingId
-                  }}</span
-                >
-                <button
-                  class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-2"
-                  (click)="copyToClipboard('meetingURLCopied')"
-                >
-                  <i
-                    class="bi px-1 align-middle"
-                    [ngClass]="
-                      meetingCopy.meetingURLCopied
-                        ? 'bi-check2-circle fw-bold'
-                        : 'bi-copy'
-                    "
-                    style="font-size: 0.9rem"
-                  ></i>
-                </button>
-              </div>
-            </div> -->
           </div>
 
           <!-- Participant tiles -->
@@ -175,7 +123,7 @@
                       <div
                         *ngIf="
                           peerParticipant.connection.status ==
-                          connectionStatus.NEW
+                          connectionStatus.WAITING
                         "
                         class="connecting text-light d-flex justify-content-center rounded-circle"
                       >
@@ -234,154 +182,9 @@
             </div>
           </ng-template>
         </div>
-        <!-- <mat-grid-list cols="1" rowHeight="4:3">
-          <mat-grid-tile class="rounded-1">
-            <div class="rounded-2">
-              <video
-                class="rounded-1"
-                style="transform: scale(-1, 1)"
-                [srcObject]="videoService.localStream"
-                [autoplay]="true"
-                [muted]="true"
-              ></video>
-            </div>
-          </mat-grid-tile>
-          <mat-grid-tile class="rounded-1">
-            <div class="temp rounded-2">
-              <span class="bottom-left p-1 px-2 rounded-3 text-light shadow">
-                <i class="button-icon bi bi-mic-fill pe-2"></i>
-                <small>Sameer Khurd</small>
-              </span>
-              <video
-                [srcObject]="videoService.localStream"
-                [autoplay]="true"
-                [muted]="true"
-              ></video>
-            </div>
-          </mat-grid-tile>
-          <mat-grid-tile class="rounded-1">
-            <span class="bottom-left p-1 px-2 rounded-2 text-light">
-              <i class="button-icon bi bi-mic-fill pe-2"></i>
-              <small>Sameer Khurd</small>
-            </span>
-            <video
-              class="rounded-1"
-              [srcObject]="videoService.localStream"
-              [autoplay]="true"
-              [muted]="true"
-            ></video>
-          </mat-grid-tile>
-          <mat-grid-tile class="rounded-1">
-            <video
-              class="rounded-1"
-              [srcObject]="videoService.localStream"
-              [autoplay]="true"
-              [muted]="true"
-            ></video>
-          </mat-grid-tile>
-          <mat-grid-tile class="rounded-1">
-            <div class="text-center text-light pt-4">
-              <div
-                class="display-4 rounded-circle border border-0 p-4 bg-secondary"
-              >
-                SK
-              </div>
-              <div class="mt-3 px-2 rounded-2 text-light">
-                <i class="button-icon bi bi-mic-fill pe-2"></i>
-                <small>Sameer Khurd</small>
-              </div>
-            </div>
-          </mat-grid-tile>
-
-          <mat-grid-tile class="rounded-1">
-            <video
-              class="rounded-1"
-              [srcObject]="videoService.localStream"
-              [autoplay]="true"
-              [muted]="true"
-            ></video>
-          </mat-grid-tile>
-        </mat-grid-list> -->
-        <!-- <div id="flex">
-          <div class="video">
-            <video
-              style="max-width: 100%; max-height: 100%; object-fit: cover"
-              [srcObject]="videoService.localStream"
-              [autoplay]="true"
-              [muted]="true"
-            ></video>
-          </div>
-          <div class="video"></div>
-          <div class="video"></div>
-          <div class="video"></div>
-          <div class="video"></div>
-        </div> -->
-        <!-- <video
-          [srcObject]="videoService.localStream"
-          [autoplay]="true"
-          [muted]="true"
-        ></video>
-        <mat-grid-list cols="2" rowHeight="2:1">
-          <mat-grid-tile>
-            <video
-              [srcObject]="videoService.localStream"
-              [autoplay]="true"
-              [muted]="true"
-            ></video>
-          </mat-grid-tile>
-          <mat-grid-tile class="bg-info">2</mat-grid-tile>
-          <mat-grid-tile>
-          </mat-grid-tile>
-          <mat-grid-tile class="bg-info">4</mat-grid-tile>
-        </mat-grid-list> -->
       </div>
     </div>
     <div class="footer text-secondary" style="position: relative">
-      <!-- <span>
-        <span class="ps-3">
-          <i
-            class="bi px-1 align-middle"
-            [ngClass]="
-              meetingCopy.meetingIDCopied
-                ? 'bi-check2-circle fw-bold'
-                : 'bi-copy'
-            "
-            style="font-size: 0.8rem"
-          ></i>
-          <small>Meeting ID</small>
-          <button
-            class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-1 mb-1"
-            (click)="copyToClipboard('meetingIDCopied')"
-          >
-            <i
-              class="bi px-1 align-middle"
-              [ngClass]="
-                meetingCopy.meetingIDCopied
-                  ? 'bi-check2-circle fw-bold'
-                  : 'bi-copys'
-              "
-              style="font-size: 0.8rem"
-            ></i>
-          </button>
-        </span>
-        <span class="ps-3">
-          <small>Meeting URL</small>
-          <button
-            class="btn btn-sm btn-outline-secondary border-0 p-0 align-middle ms-1 mb-1"
-            (click)="copyToClipboard('meetingIDCopied')"
-          >
-            <i
-              class="bi px-1 align-middle"
-              [ngClass]="
-                meetingCopy.meetingIDCopied
-                  ? 'bi-check2-circle fw-bold'
-                  : 'bi-copy'
-              "
-              style="font-size: 0.8rem"
-            ></i>
-          </button>
-        </span>
-      </span> -->
       <div
         class="bottom-right-video bg-dark-1 border border-2"
         [ngClass]="

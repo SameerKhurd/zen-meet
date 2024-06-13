@@ -1,20 +1,28 @@
-import { Injectable } from "@angular/core";
-import { MeetingCollectionService } from "./database-services/meeting-collection.service";
-import { ParticipantChannel } from "./channels/participants-channel";
-import {
-  ParticipantCollectionService,
-  ParticipantDoc,
-} from "./database-services/participant-collection.service";
-import { ConnectionService, connectionStatus } from "./connection.service";
-import { MediaService, mediaStatus } from "./media.service";
-import { MessagingService } from "./messaging.service";
+import { Injectable } from '@angular/core';
+import { MeetingCollectionService } from './database-services/meeting-collection.service';
+import { ParticipantChannel } from './channels/participants-channel';
+import { ParticipantCollectionService } from './database-services/participant-collection.service';
+import { MediaService, mediaStatus } from './media.service';
+import { MessagingService } from './messaging.service';
 
-import { ConnectionCollectionService } from "./database-services/connection-collection.service";
-import { Subject } from "rxjs";
+import { ConnectionCollectionService } from './database-services/connection-collection.service';
+import { Subject } from 'rxjs';
+import { ConnectionService } from './connection/connection.service';
+import { connectionStatus } from './connection/rtc-connection/rtc-connection-abstract/rtc-connection-abstract.service';
 
 export interface Meeting {
   meetingName: string;
   startTime: Date;
+}
+
+export interface ParticipantData {
+  participantName: string;
+  participantId: string;
+  videoEnabled: boolean;
+  micEnabled: boolean;
+  handRaised: boolean;
+  joinTime: Date;
+  state: 'new' | 'updated';
 }
 
 export interface PeerParticipant {
@@ -30,24 +38,29 @@ export interface PeerParticipant {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class MeetingService {
-  meetingId = "";
-  meetingName = "";
-  userParticipantId: string = "";
-  userParticipantName = "";
+  meetingId = '';
+  meetingName = '';
+  meetingTimer = 0;
+  userParticipantId: string = '';
+  userParticipantName = '';
   isRaisedHand = false;
   participantRaisedHandCount = 0;
-  joinMeetingLoading = false;
+  meetingStatus: 'not-joined' | 'joined' | 'ended' | 'loading' | 'error' =
+    'not-joined';
   peerPartcipants: PeerParticipant[] = [];
   participantCounter: number = 1;
   private participantChannel!: ParticipantChannel;
   partcipantsStyleCodeMap: any = {};
   partcipantsMap: any = {};
+  participantIdempotencyMap: any = {};
   userEmojiReacted: boolean = false;
-  userEmojiReaction: string = "";
-  participantEvent = new Subject<boolean>();
+  userEmojiReaction: string = '';
+  participantEvent!: Subject<boolean>;
+  private userRegistrationTime!: Date;
+  private userSessionId!: number;
 
   constructor(
     public mediaService: MediaService,
@@ -70,6 +83,22 @@ export class MeetingService {
         );
       }
     );
+  }
+
+  initializeMeetingParameters() {
+    this.leaveMeeting();
+    this.meetingTimer = 0;
+    this.isRaisedHand = false;
+    this.participantRaisedHandCount = 0;
+    this.meetingStatus = 'not-joined';
+    this.peerPartcipants = [];
+    this.participantCounter = 1;
+    this.partcipantsStyleCodeMap = {};
+    this.partcipantsMap = {};
+    this.participantIdempotencyMap = {};
+    this.userEmojiReacted = false;
+    this.userEmojiReaction = '';
+    this.participantEvent = new Subject<boolean>();
   }
 
   async startNewMeeting(meetingName: string): Promise<void> {
@@ -96,9 +125,37 @@ export class MeetingService {
   }
 
   async joinMeeting() {
-    this.joinMeetingLoading = true;
+    this.initializeMeetingParameters();
+    this.meetingStatus = 'not-joined';
+    // TODO
+    //this.meetingStatus = 'loading';
     this.storeUserDetailsLocally();
 
+    try {
+      this.userRegistrationTime =
+        await this.participantChannel.publishNewParticipant(
+          this.meetingId,
+          this.userParticipantId,
+          this.userParticipantName,
+          this.mediaService.cameraStatus === mediaStatus.ENABLED,
+          this.mediaService.micStatus === mediaStatus.ENABLED,
+          this.isRaisedHand
+        );
+      this.userSessionId = this.userRegistrationTime.getTime();
+      this.subscribeParticipantChannel();
+      this.meetingTimer = 0;
+      this.meetingStatus = 'joined';
+    } catch (err: any) {
+      // TODO -
+      //this.meetingStatus = 'error';
+      this.meetingStatus = 'joined';
+      throw err;
+    }
+
+    this.meetingTimer = 0;
+  }
+
+  private subscribeParticipantChannel(): void {
     const participantChannelCallbackWrapper = (type: any, data: any) => {
       return this.participantChannelCallback(type, data);
     };
@@ -107,58 +164,49 @@ export class MeetingService {
       this.meetingId,
       participantChannelCallbackWrapper
     );
-    await this.participantChannel.publishNewParticipant(
-      this.meetingId,
-      this.userParticipantId,
-      this.userParticipantName,
-      this.mediaService.cameraStatus === mediaStatus.ENABLED,
-      this.mediaService.micStatus === mediaStatus.ENABLED,
-      this.isRaisedHand
-    );
-    this.joinMeetingLoading = false;
   }
 
   private participantChannelCallback(
     type: any,
-    peerParticipant: ParticipantDoc
+    peerParticipant: ParticipantData
   ) {
-    switch (type) {
-      case "added": {
-        if (peerParticipant.participantId !== this.userParticipantId) {
-          // Idempotency check
-          if (
-            !(peerParticipant.participantId in this.partcipantsMap) ||
-            this.partcipantsMap[peerParticipant.participantId].connection
-              .status === connectionStatus.CLOSED
-          ) {
-            this.addPeerParticipant(peerParticipant);
-          }
-        }
-        break;
-      }
-      case "modified": {
-        if (peerParticipant.participantId in this.partcipantsMap) {
-          const updatePeerParticipant =
-            this.partcipantsMap[peerParticipant.participantId];
-          updatePeerParticipant.handRaised = peerParticipant.handRaised;
-          updatePeerParticipant.videoEnabled = peerParticipant.videoEnabled;
-          updatePeerParticipant.micEnabled = peerParticipant.micEnabled;
-        }
-        break;
-      }
-    }
+    const partcipantSessionId = peerParticipant.joinTime.getTime();
+    if (peerParticipant.participantId !== this.userParticipantId) {
+      // Idempotency check
+      if (!(peerParticipant.participantId in this.participantIdempotencyMap)) {
+        this.participantIdempotencyMap[peerParticipant.participantId] =
+          partcipantSessionId;
+        this.addPeerParticipant(peerParticipant, partcipantSessionId);
+      } else if (
+        this.participantIdempotencyMap[peerParticipant.participantId] <
+        partcipantSessionId
+      ) {
+        const currPeerPartcipant: PeerParticipant =
+          this.partcipantsMap[peerParticipant.participantId];
+        currPeerPartcipant.connection.closeConnection();
 
-    if (type === "added") {
+        this.participantIdempotencyMap[peerParticipant.participantId] =
+          partcipantSessionId;
+        this.addPeerParticipant(peerParticipant, partcipantSessionId);
+      } else {
+        const updatePeerParticipant =
+          this.partcipantsMap[peerParticipant.participantId];
+        updatePeerParticipant.handRaised = peerParticipant.handRaised;
+        updatePeerParticipant.videoEnabled = peerParticipant.videoEnabled;
+        updatePeerParticipant.micEnabled = peerParticipant.micEnabled;
+      }
+      this.participantEvent.next(true);
     }
-
-    this.participantEvent.next(true);
   }
   storeUserDetailsLocally(): void {
-    localStorage.setItem("userParticipantId", this.userParticipantId);
-    localStorage.setItem("userParticipantName", this.userParticipantName);
+    localStorage.setItem('userParticipantId', this.userParticipantId);
+    localStorage.setItem('userParticipantName', this.userParticipantName);
   }
 
-  private addPeerParticipant(peerParticipant: ParticipantDoc): void {
+  private addPeerParticipant(
+    peerParticipant: ParticipantData,
+    partcipantSessionId: number
+  ): void {
     this.participantCounter++;
     const newPeerParticipant: PeerParticipant = {
       participantName: peerParticipant.participantName,
@@ -173,22 +221,22 @@ export class MeetingService {
         this.meetingId,
         this.userParticipantId,
         peerParticipant.participantId,
-        this.mediaService.localMediaStream
+        this.mediaService.localMediaStream,
+        this.userSessionId,
+        partcipantSessionId
       ),
     };
-    console.log(newPeerParticipant.participantName);
 
     this.partcipantsMap[newPeerParticipant.participantId] = newPeerParticipant;
     this.peerPartcipants.push(newPeerParticipant);
     this.partcipantsStyleCodeMap[newPeerParticipant.participantId] =
       newPeerParticipant.roll;
 
-    newPeerParticipant.connection.participantConnectionEvent.subscribe(
-      (event: boolean) => {
-        console.log(this.peerPartcipants);
+    newPeerParticipant.connection
+      .connectionEventListener()
+      .subscribe((event: boolean) => {
         this.participantEvent.next(true);
-      }
-    );
+      });
   }
 
   getParticipantStyleCode(participantId: string): number {
@@ -258,6 +306,7 @@ export class MeetingService {
         peerPartcipant.connection.closeConnection();
       }
     }
+    this.meetingStatus = 'ended';
   }
 
   async updatePartcipant(): Promise<void> {

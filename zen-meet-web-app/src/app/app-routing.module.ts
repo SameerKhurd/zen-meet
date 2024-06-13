@@ -1,33 +1,33 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { HomeComponent } from "./pages/home/home.component";
-import { MeetingMainComponent } from "./pages/meeting-main/meeting-main.component";
-import { EndMeetingComponent } from "./pages/meeting-main/end-meeting/end-meeting.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './pages/home/home.component';
+import { MeetingMainComponent } from './pages/meeting-main/meeting-main.component';
+// import { EndMeetingComponent } from "./pages/meeting-main/end-meeting/end-meeting.component";
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: HomeComponent,
     children: [
       {
-        path: "meeting",
+        path: 'meeting',
         children: [
+          // {
+          //   path: "end",
+          //   component: EndMeetingComponent,
+          // },
           {
-            path: "end",
-            component: EndMeetingComponent,
-          },
-          {
-            path: ":meetingId",
+            path: ':meetingId',
             component: MeetingMainComponent,
           },
-          { path: "", redirectTo: "/", pathMatch: "full" },
+          { path: '', redirectTo: '/', pathMatch: 'full' },
         ],
       },
     ],
   },
   {
-    path: "**",
-    redirectTo: "",
+    path: '**',
+    redirectTo: '',
   },
 ];
 

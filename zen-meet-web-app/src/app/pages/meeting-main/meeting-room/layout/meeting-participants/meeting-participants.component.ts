@@ -1,14 +1,20 @@
-import { Component, Input } from "@angular/core";
-import { MediaService, mediaStatus } from "../../../../../services/media.service";
-import { MeetingService, PeerParticipant } from "../../../../../services/meeting.service";
-import { connectionStatus } from "../../../../../services/connection.service";
-import { InvitePeopleDailogComponent } from "../../../../../dailog-modals/invite-people-dailog/invite-people-dailog.component";
-import { MatDialog } from "@angular/material/dialog";
+import { Component, Input } from '@angular/core';
+import {
+  MediaService,
+  mediaStatus,
+} from '../../../../../services/media.service';
+import {
+  MeetingService,
+  PeerParticipant,
+} from '../../../../../services/meeting.service';
+import { InvitePeopleDailogComponent } from '../../../../../dailog-modals/invite-people-dailog/invite-people-dailog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { connectionStatus } from 'src/app/services/connection/rtc-connection/rtc-connection-abstract/rtc-connection-abstract.service';
 
 @Component({
-  selector: "app-meeting-participants",
-  templateUrl: "./meeting-participants.component.html",
-  styleUrls: ["./meeting-participants.component.scss"],
+  selector: 'app-meeting-participants',
+  templateUrl: './meeting-participants.component.html',
+  styleUrls: ['./meeting-participants.component.scss'],
 })
 export class MeetingParticipantsComponent {
   @Input() meetingSideSection!: any;
@@ -34,7 +40,8 @@ export class MeetingParticipantsComponent {
   private onParticipantEvent() {
     let currPeerPartcipants = this.meetingService.peerPartcipants.filter(
       (peerParticipant: PeerParticipant) =>
-        peerParticipant.connection.status !== connectionStatus.CLOSED
+        peerParticipant.connection.status === connectionStatus.CONNECTED ||
+        peerParticipant.connection.status === connectionStatus.WAITING
     );
     currPeerPartcipants = currPeerPartcipants.sort((a, b) =>
       a.participantName > b.participantName ? 1 : -1
@@ -52,18 +59,18 @@ export class MeetingParticipantsComponent {
   }
 
   onClose() {
-    this.meetingSideSection.section = "hide";
+    this.meetingSideSection.section = 'hide';
   }
 
   splitPartcipantName(participantName: string): string {
     participantName = participantName.trim();
-    let initials: string = participantName?.length ? participantName[0] : "";
-    const whitespaceIndex = participantName.indexOf(" ");
+    let initials: string = participantName?.length ? participantName[0] : '';
+    const whitespaceIndex = participantName.indexOf(' ');
     if (whitespaceIndex > 0) {
       const lastName: string = participantName
         .substring(whitespaceIndex)
         .trim();
-      initials += lastName.length ? lastName[0] : "";
+      initials += lastName.length ? lastName[0] : '';
     }
     return initials;
   }

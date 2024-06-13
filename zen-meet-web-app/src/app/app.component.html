@@ -3,24 +3,50 @@
   style="border-bottom: 1px solid #252525"
 >
   <div class="container-fluid">
-    <a class="navbar-brand text-secondary" routerLink="/" title="Go to home">
-      <span class="h6">
-        <div class="ps-2">
-          <i
-            class="bi bi-camera-video text-light p-0 px-1 rounded-2 bg-danger align-middle"
-            style="
-              font-size: 1rem;
-              border: 1px solid rgb(144, 50, 0);
-              color: rgb(255, 211, 211);
-            "
-          ></i>
-          <span class="ps-2 text-danger align-middle fs-6">
-            <strong>ZenMeet</strong>
+    <div class="d-flex p-2">
+      <div class="align-self-center pe-4 me-4">
+        <a
+          class="navbar-branda text-secondary text-decoration-none"
+          routerLink="/"
+          title="Go to home"
+        >
+          <span class="h6">
+            <div class="">
+              <i
+                class="bi bi-camera-video text-light p-0 px-1 rounded-2 bg-danger align-middle"
+                style="
+                  font-size: 1rem;
+                  border: 1px solid rgb(144, 50, 0);
+                  color: rgb(255, 211, 211);
+                "
+              ></i>
+              <span class="ps-2 text-danger align-middle fs-6">
+                <strong>ZenMeet</strong>
+              </span>
+            </div>
           </span>
-        </div>
-      </span>
-    </a>
-    <button
+        </a>
+      </div>
+      <div class="align-self-center me-4">
+        <a
+          class="nav-link pe-enabled"
+          title="Join Meeting"
+          (click)="openJoinMeetingDialog()"
+        >
+          <span class="font-sm">Join now</span>
+        </a>
+      </div>
+      <div class="align-self-center">
+        <a
+          class="nav-link pe-enabled"
+          title="Start New Meeting"
+          (click)="openNewMeetingDialog()"
+        >
+          <span class="font-sm"> New meeting</span>
+        </a>
+      </div>
+    </div>
+    <!-- <button
       class="navbar-toggler"
       type="button"
       data-bs-toggle="collapse"
@@ -30,60 +56,8 @@
       aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item ps-3 align-middle">
-          <a
-            class="nav-link pe-enabled"
-            title="Join Meeting"
-            (click)="openJoinMeetingDialog()"
-          >
-            <span class="font-sm">Join now</span>
-          </a>
-        </li>
-        <li class="nav-item ps-2">
-          <a
-            class="nav-link pe-enabled"
-            title="Start New Meeting"
-            (click)="openNewMeetingDialog()"
-          >
-            <span class="font-sm"> New meeting</span>
-          </a>
-        </li>
-      </ul>
-      <!-- <form class="d-flex">
-        <div class="font-sm align-middle pt-1 pe-3 me-3 text-light border-end">
-          <a
-            class="fw-s a-link text-light"
-            target="_blank"
-            href="https://medium.com/@sameerkhurd/from-design-to-demo-building-a-full-stack-leetcode-like-platform-with-system-design-4c86d61f398a"
-          >
-            <small> System Design Blog </small>
-          </a>
-        </div>
-
-        <a
-          class="align-middle pe-3 me-3 text-light border-end"
-          target="_blank"
-          href="https://github.com/SameerKhurd/algo-bytes"
-        >
-          <i class="pi align-middle pi-github" style="font-size: 1rem"></i
-        ></a>
-
-        <a
-          class="align-middle text-light pe-3 me-3 border-end"
-          target="_blank"
-          href="https://www.linkedin.com/in/sameer-khurd"
-        >
-          <i class="pi align-middle pi-linkedin" style="font-size: 1rem"></i
-        ></a>
-
-        <div class="font-sm align-middle pt-1">
-          <small> Logged in as <strong></strong> </small>
-        </div>
-      </form> -->
-    </div>
+    </button> -->
+    
   </div>
 </nav>
 
