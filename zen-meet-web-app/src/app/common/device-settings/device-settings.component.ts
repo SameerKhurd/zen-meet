@@ -1,14 +1,14 @@
-import { AfterViewInit, Component } from "@angular/core";
+import { AfterViewInit, Component } from '@angular/core';
 import {
   DeviceMedia,
   MediaService,
   mediaStatus,
-} from "src/app/services/media.service";
-import { MeetingService } from "src/app/services/meeting.service";
+} from 'src/app/services/media.service';
+import { MeetingService } from 'src/app/services/meeting.service';
 @Component({
-  selector: "app-device-settings",
-  templateUrl: "./device-settings.component.html",
-  styleUrls: ["./device-settings.component.scss"],
+  selector: 'app-device-settings',
+  templateUrl: './device-settings.component.html',
+  styleUrls: ['./device-settings.component.scss'],
 })
 export class DeviceSettingsComponent implements AfterViewInit {
   deviceMedia: DeviceMedia = {
@@ -31,10 +31,13 @@ export class DeviceSettingsComponent implements AfterViewInit {
     this.mediaService.getDeviceMedia().then((deviceMedia: DeviceMedia) => {
       this.deviceMedia = deviceMedia;
       if (this.deviceMedia.cameras.length && !this.mediaService.camera) {
-        this.mediaService.setCamera(this.deviceMedia.cameras[0]);
+        this.mediaService.camera = this.deviceMedia.cameras[0];
       }
       if (this.deviceMedia.mics.length && !this.mediaService.mic) {
-        this.mediaService.setMic(this.deviceMedia.mics[0]);
+        this.mediaService.mic = this.deviceMedia.mics[0];
+      }
+      if (this.deviceMedia.speakars.length && !this.mediaService.speakar) {
+        this.mediaService.speakar = this.deviceMedia.speakars[0];
       }
       this.mediaService.requestMediaDevices();
     });
@@ -69,6 +72,10 @@ export class DeviceSettingsComponent implements AfterViewInit {
   async onMicSelect() {
     this.mediaService.stopMic();
     await this.mediaService.startMic();
-    this.meetingService.updateConnectionVideoStream();
+    this.meetingService.updateConnectionAudioStream();
+  }
+
+  async onSpeakarSelect() {
+    await this.mediaService.setSpeakar(this.mediaService.speakar);
   }
 }

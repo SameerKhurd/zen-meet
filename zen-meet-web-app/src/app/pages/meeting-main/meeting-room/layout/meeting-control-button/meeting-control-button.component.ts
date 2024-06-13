@@ -1,23 +1,31 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { MeetingService, PeerParticipant } from "../../../../../services/meeting.service";
-import { MediaService, mediaStatus } from "../../../../../services/media.service";
-import { MatDialog } from "@angular/material/dialog";
-import { EmojiPickerComponent } from "../../../../../common/emoji-picker/emoji-picker.component";
-import { Message, MessagingService } from "../../../../../services/messaging.service";
-import { connectionStatus } from "../../../../../services/connection.service";
-import { DeviceSettingsDailogComponent } from "../../../../../dailog-modals/device-settings-dailog/device-settings-dailog.component";
-import { InvitePeopleDailogComponent } from "../../../../../dailog-modals/invite-people-dailog/invite-people-dailog.component";
-import { Router } from "@angular/router";
+import { Component, Input, OnInit } from '@angular/core';
+import {
+  MeetingService,
+  PeerParticipant,
+} from '../../../../../services/meeting.service';
+import {
+  MediaService,
+  mediaStatus,
+} from '../../../../../services/media.service';
+import { MatDialog } from '@angular/material/dialog';
+import { EmojiPickerComponent } from '../../../../../common/emoji-picker/emoji-picker.component';
+import {
+  Message,
+  MessagingService,
+} from '../../../../../services/messaging.service';
+import { DeviceSettingsDailogComponent } from '../../../../../dailog-modals/device-settings-dailog/device-settings-dailog.component';
+import { InvitePeopleDailogComponent } from '../../../../../dailog-modals/invite-people-dailog/invite-people-dailog.component';
+import { Router } from '@angular/router';
+import { connectionStatus } from 'src/app/services/connection/rtc-connection/rtc-connection-abstract/rtc-connection-abstract.service';
 
 @Component({
-  selector: "app-meeting-control-button",
-  templateUrl: "./meeting-control-button.component.html",
-  styleUrls: ["./meeting-control-button.component.scss"],
+  selector: 'app-meeting-control-button',
+  templateUrl: './meeting-control-button.component.html',
+  styleUrls: ['./meeting-control-button.component.scss'],
 })
 export class MeetingControlButtonComponent implements OnInit {
   @Input() meetingSideSection!: any;
-  private meetingTimer = 0;
-  formatedMeetingTime = "00:00";
+  formatedMeetingTime = '00:00';
   mediaStatus = mediaStatus;
 
   constructor(
@@ -40,7 +48,7 @@ export class MeetingControlButtonComponent implements OnInit {
   private onParticipantEvent() {
     let currPeerPartcipants = this.meetingService.peerPartcipants.filter(
       (peerParticipant: PeerParticipant) =>
-        peerParticipant.connection.status !== connectionStatus.CLOSED
+        peerParticipant.connection.status === connectionStatus.CONNECTED
     );
     const raisedHandPartcipants = currPeerPartcipants.filter(
       (peerParticipant: PeerParticipant) => peerParticipant.handRaised
@@ -54,7 +62,7 @@ export class MeetingControlButtonComponent implements OnInit {
 
   openEmojiDialog() {
     const dialogRef = this.dialog.open(EmojiPickerComponent, {
-      data: { emoji: "" },
+      data: { emoji: '' },
     });
 
     dialogRef
@@ -79,7 +87,7 @@ export class MeetingControlButtonComponent implements OnInit {
       content: emoji,
       participantId: this.meetingService.userParticipantId,
       participantName: this.meetingService.userParticipantName,
-      type: "reaction",
+      type: 'reaction',
     };
     this.messagingService.sendEmojiReaction(
       this.meetingService.meetingId,
@@ -88,18 +96,18 @@ export class MeetingControlButtonComponent implements OnInit {
   }
 
   onPeopleSection() {
-    if (this.meetingSideSection.section === "message") {
+    if (this.meetingSideSection.section === 'message') {
       this.messagingService.updateLastUserReadTimeStamp();
     }
     this.meetingSideSection.section =
-      this.meetingSideSection.section === "people" ? "hide" : "people";
+      this.meetingSideSection.section === 'people' ? 'hide' : 'people';
   }
 
   onMessageSection() {
     this.messagingService.updateLastUserReadTimeStamp();
 
     this.meetingSideSection.section =
-      this.meetingSideSection.section === "message" ? "hide" : "message";
+      this.meetingSideSection.section === 'message' ? 'hide' : 'message';
   }
 
   onRaiseHand() {
@@ -110,7 +118,7 @@ export class MeetingControlButtonComponent implements OnInit {
 
   onLeaveMeeting() {
     this.meetingService.leaveMeeting();
-    this.router.navigate(["meeting", "end"]);
+    //this.router.navigate(['meeting', 'end']);
   }
 
   async onCameraToggle(): Promise<void> {
@@ -135,27 +143,26 @@ export class MeetingControlButtonComponent implements OnInit {
 
   private startMeetingTimer() {
     setInterval(() => {
-      this.meetingTimer++;
+      this.meetingService.meetingTimer++;
       this.formatMeetingTime();
     }, 1000);
   }
 
   private formatMeetingTime() {
-    const minutes: number = Math.floor(this.meetingTimer / 60);
-    const seconds: number = this.meetingTimer - minutes * 60;
+    const meetingTimer = this.meetingService.meetingTimer;
+    const minutes: number = Math.floor(meetingTimer / 60);
+    const seconds: number = meetingTimer - minutes * 60;
 
     if (minutes < 10 && seconds < 10) {
       this.formatedMeetingTime =
-        "0" + minutes + ":0" + (this.meetingTimer - minutes * 60);
+        '0' + minutes + ':0' + (meetingTimer - minutes * 60);
     } else if (minutes < 10 && seconds >= 10) {
       this.formatedMeetingTime =
-        "0" + minutes + ":" + (this.meetingTimer - minutes * 60);
+        '0' + minutes + ':' + (meetingTimer - minutes * 60);
     } else if (minutes >= 10 && seconds >= 10) {
-      this.formatedMeetingTime =
-        minutes + ":" + (this.meetingTimer - minutes * 60);
+      this.formatedMeetingTime = minutes + ':' + (meetingTimer - minutes * 60);
     } else if (minutes >= 10 && seconds < 10) {
-      this.formatedMeetingTime =
-        minutes + ":0" + (this.meetingTimer - minutes * 60);
+      this.formatedMeetingTime = minutes + ':0' + (meetingTimer - minutes * 60);
     }
   }
 }

@@ -24,8 +24,8 @@ export class ParticipantChannel {
     videoEnabled: boolean,
     micEnabled: boolean,
     handRaised: boolean
-  ): Promise<void> {
-    await this.participantCollectionService.addParticipant(
+  ): Promise<Date> {
+    return await this.participantCollectionService.addParticipant(
       meetingId,
       participantId,
       participantName,

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 const MEDIA_CONSTRAINTS = {
   audio: true,
@@ -24,7 +24,7 @@ export enum mediaStatus {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class MediaService {
   localMediaStream!: MediaStream;
@@ -44,13 +44,13 @@ export class MediaService {
       await navigator.mediaDevices.enumerateDevices();
 
     const cameraDevices: MediaDeviceInfo[] = availableDevices.filter(
-      (device) => device.kind === "videoinput"
+      (device) => device.kind === 'videoinput'
     );
     const micDevices: MediaDeviceInfo[] = availableDevices.filter(
-      (device) => device.kind === "audioinput"
+      (device) => device.kind === 'audioinput'
     );
     const speakarDevices: MediaDeviceInfo[] = availableDevices.filter(
-      (device) => device.kind === "audiooutput"
+      (device) => device.kind === 'audiooutput'
     );
 
     const deviceMedia: DeviceMedia = {
@@ -58,7 +58,6 @@ export class MediaService {
       mics: micDevices,
       speakars: speakarDevices,
     };
-
     return deviceMedia;
   }
 
@@ -70,8 +69,17 @@ export class MediaService {
     this.mic = selectedMic;
   }
 
-  setSpeakar(selectedSpeakar: MediaDeviceInfo): void {
+  async setSpeakar(selectedSpeakar: MediaDeviceInfo): Promise<void> {
     this.speakar = selectedSpeakar;
+    const audio: any = document.createElement('audio');
+    audio
+      .setSinkId(this.speakar.deviceId)
+      .then(() => {
+        console.log('sucess');
+      })
+      .catch((rr: any) => {
+        console.log('err', rr);
+      });
   }
 
   async requestMediaDevices(): Promise<void> {
@@ -88,7 +96,7 @@ export class MediaService {
 
   private async startMediaDevice(
     mediaStreamConstraints: MediaStreamConstraints,
-    getMediaTracksMethod: "getVideoTracks" | "getAudioTracks"
+    getMediaTracksMethod: 'getVideoTracks' | 'getAudioTracks'
   ) {
     const mediaStream: MediaStream = await navigator.mediaDevices.getUserMedia(
       mediaStreamConstraints
@@ -106,7 +114,7 @@ export class MediaService {
   }
 
   private stopMediaDevice(
-    getMediaTracksMethod: "getVideoTracks" | "getAudioTracks"
+    getMediaTracksMethod: 'getVideoTracks' | 'getAudioTracks'
   ): void {
     if (this.localMediaStream) {
       const [currMediaTrack] = this.localMediaStream[getMediaTracksMethod]();
@@ -127,13 +135,13 @@ export class MediaService {
       },
     };
 
-    await this.startMediaDevice(videoConstraints, "getVideoTracks");
+    await this.startMediaDevice(videoConstraints, 'getVideoTracks');
     this.cameraStatus = mediaStatus.ENABLED;
   }
 
   stopCamera(): void {
     this.cameraStatus = mediaStatus.LOADING;
-    this.stopMediaDevice("getVideoTracks");
+    this.stopMediaDevice('getVideoTracks');
     this.cameraStatus = mediaStatus.DISABLED;
   }
 
@@ -147,13 +155,13 @@ export class MediaService {
       },
     };
 
-    await this.startMediaDevice(micConstraints, "getAudioTracks");
+    await this.startMediaDevice(micConstraints, 'getAudioTracks');
     this.micStatus = mediaStatus.ENABLED;
   }
 
   stopMic(): void {
     this.micStatus = mediaStatus.LOADING;
-    this.stopMediaDevice("getAudioTracks");
+    this.stopMediaDevice('getAudioTracks');
     this.micStatus = mediaStatus.DISABLED;
   }
 }

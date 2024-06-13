@@ -1,14 +1,14 @@
-import { Component } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: "app-join-meeting-dailog",
-  templateUrl: "./join-meeting-dailog.component.html",
-  styleUrls: ["./join-meeting-dailog.component.scss"],
+  selector: 'app-join-meeting-dailog',
+  templateUrl: './join-meeting-dailog.component.html',
+  styleUrls: ['./join-meeting-dailog.component.scss'],
 })
 export class JoinMeetingDailogComponent {
-  userMeetingId: string = "";
+  userMeetingId: string = '';
   isInvalidId = false;
 
   constructor(
@@ -29,9 +29,7 @@ export class JoinMeetingDailogComponent {
   onJoin(): void {
     this.validateUserMeetingId();
     if (!this.isInvalidId) {
-      this.router.navigate(["meeting", this.userMeetingId], {
-        relativeTo: this.activatedRoute,
-      });
+      this.router.navigate(['meeting', this.userMeetingId]);
       this.dialogRef.close();
     }
   }

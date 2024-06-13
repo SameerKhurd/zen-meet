@@ -1,7 +1,7 @@
 <div *ngIf="!outlet.isActivated">
-  <div class="container-xxl">
+  <div class="container-md">
     <div class="row">
-      <div class="col-6 fade-in-left pt-4">
+      <div class="col-md-6 p-1 fade-in-left pt-4">
         <div
           class="mt-4 text-secondary h2 d-block"
           style="height: 30px; width: 100%"
@@ -34,18 +34,20 @@
             <strong>ZenMeet</strong>
           </span>
         </div>
-        <div class="pe-4 py-2 display-3 fw-bold text-light">
-          Online Real-Time Communication Platform
+        <div class="pe-4 py-2 display-4 fw-bold text-light">
+          Online Real-Time <br />
+          Multi-Communication Platform
         </div>
         <div
           class="me-4 mt-3 pe-4 fs-5 lh-base border-dark fade-in-left"
           style="color: #aaa"
         >
-          Enjoy video calls, audio calls, messaging, and interactive features
-          like reactions and raise hand with multiple participants on ZenMeet
+          Create meeting rooms, make video and audio calls, send messages, and
+          use interactive features like reactions and raise hand with multiple
+          participants on ZenMeet.
         </div>
       </div>
-      <div class="col-6 pt-3">
+      <div class="col-md-6 p-1 pt-3">
         <div class="pic-ctn">
           <img
             src="assets/home-page-pics/0.png"
@@ -76,7 +78,7 @@
       </div>
     </div>
     <div class="row pt-4">
-      <div class="col-6 fade-in-left">
+      <div class="col-md-6 p-1 fade-in-left">
         <div
           class="me-4 py-1 ps-3 pe-4 fade-in-left text-secondary border-start border-4 border-secondary"
         >
@@ -98,24 +100,28 @@
           >
         </div>
       </div>
-      <div class="col-6 fade-in-right">
-        <div class="ps-3 text-center">
-          <button
-            class="btn btn-light"
-            style="min-width: 40%"
-            (click)="openJoinMeetingDialog()"
-          >
-            Join Meeting
-          </button>
-          <span class="mx-4 border-2 border-start border-secondary py-2">
-          </span>
-          <button
-            class="btn btn-danger"
-            style="min-width: 40%"
-            (click)="openNewMeetingDialog()"
-          >
-            Start New Meeting
-          </button>
+      <div class="col-md-6 p-1 fade-in-right">
+        <div class="mx-4 d-flex">
+          <div class="flex-fill">
+            <button
+              class="btn btn-light w-100"
+              (click)="openJoinMeetingDialog()"
+            >
+              &nbsp; Join Meeting &nbsp;
+            </button>
+          </div>
+          <div class="align-self-center">
+            <span class="mx-4 border-2 border-start border-secondary py-2">
+            </span>
+          </div>
+          <div class="flex-fill">
+            <button
+              class="btn btn-danger w-100"
+              (click)="openNewMeetingDialog()"
+            >
+              Start New Meeting
+            </button>
+          </div>
         </div>
       </div>
     </div>

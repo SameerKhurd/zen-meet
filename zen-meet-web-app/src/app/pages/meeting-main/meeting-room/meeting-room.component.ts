@@ -4,23 +4,23 @@ import {
   ViewChild,
   AfterViewInit,
   HostListener,
-} from "@angular/core";
-import { MediaService, mediaStatus } from "src/app/services/media.service";
+} from '@angular/core';
+import { MediaService, mediaStatus } from 'src/app/services/media.service';
 import {
   MeetingService,
   PeerParticipant,
-} from "src/app/services/meeting.service";
-import { connectionStatus } from "src/app/services/connection.service";
-import { InvitePeopleDailogComponent } from "../../../dailog-modals/invite-people-dailog/invite-people-dailog.component";
-import { MatDialog } from "@angular/material/dialog";
+} from 'src/app/services/meeting.service';
+import { InvitePeopleDailogComponent } from '../../../dailog-modals/invite-people-dailog/invite-people-dailog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { connectionStatus } from 'src/app/services/connection/rtc-connection/rtc-connection-abstract/rtc-connection-abstract.service';
 
 @Component({
-  selector: "app-meeting-room",
-  templateUrl: "./meeting-room.component.html",
-  styleUrls: ["./meeting-room.component.scss"],
+  selector: 'app-meeting-room',
+  templateUrl: './meeting-room.component.html',
+  styleUrls: ['./meeting-room.component.scss'],
 })
 export class MeetingRoomComponent {
-  @ViewChild("meetingTiles") elementView!: ElementRef;
+  @ViewChild('meetingTiles') elementView!: ElementRef;
   connectionStatus = connectionStatus;
   tilesHeight = 0;
   tilesWidth = 0;
@@ -28,8 +28,8 @@ export class MeetingRoomComponent {
   videoTileWidth = 250;
   mediaStatus = mediaStatus;
   currPeerPartcipants: PeerParticipant[] = [];
-  meetingSideSection: { section: "hide" | "people" | "message" } = {
-    section: "people",
+  meetingSideSection: { section: 'hide' | 'people' | 'message' } = {
+    section: 'people',
   };
 
   constructor(
@@ -46,7 +46,7 @@ export class MeetingRoomComponent {
     });
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.computeTileDimensions();
   }
@@ -58,7 +58,8 @@ export class MeetingRoomComponent {
   private onParticipantEvent() {
     this.currPeerPartcipants = this.meetingService.peerPartcipants.filter(
       (peerParticipant: PeerParticipant) =>
-        peerParticipant.connection.status !== connectionStatus.CLOSED
+        peerParticipant.connection.status === connectionStatus.CONNECTED ||
+        peerParticipant.connection.status === connectionStatus.WAITING
     );
     this.computeTileDimensions();
   }
@@ -77,7 +78,6 @@ export class MeetingRoomComponent {
     this.videoTileHeight = Math.floor((this.videoTileWidth * 3) / 4);
 
     if (this.videoTileHeight * divideFactor > this.tilesHeight) {
-      console.log(true);
       this.videoTileHeight = Math.floor(this.tilesHeight / divideFactor);
       this.videoTileWidth = Math.floor((this.videoTileHeight * 4) / 3);
     }
@@ -85,13 +85,13 @@ export class MeetingRoomComponent {
 
   splitPartcipantName(participantName: string): string {
     participantName = participantName.trim();
-    let initials: string = participantName?.length ? participantName[0] : "";
-    const whitespaceIndex = participantName.indexOf(" ");
+    let initials: string = participantName?.length ? participantName[0] : '';
+    const whitespaceIndex = participantName.indexOf(' ');
     if (whitespaceIndex > 0) {
       const lastName: string = participantName
         .substring(whitespaceIndex)
         .trim();
-      initials += lastName.length ? lastName[0] : "";
+      initials += lastName.length ? lastName[0] : '';
     }
     return initials;
   }

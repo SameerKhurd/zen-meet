@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   DocumentReference,
   Firestore,
@@ -11,10 +11,11 @@ import {
   DocumentChange,
   QuerySnapshot,
   updateDoc,
-} from "@angular/fire/firestore";
+  DocumentData,
+} from '@angular/fire/firestore';
 
 export class Collections {
-  meeting = "meetings";
+  meeting = 'meetings';
   participants = (meetingId: string) =>
     `${this.meeting}/${meetingId}/participants`;
 }
@@ -31,10 +32,11 @@ export interface ParticipantDoc {
   micEnabled: boolean;
   handRaised: boolean;
   joinTime: Timestamp;
+  state: 'new' | 'updated';
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ParticipantCollectionService {
   constructor(public firestore: Firestore) {}
@@ -56,7 +58,9 @@ export class ParticipantCollectionService {
         participantSnapshot
           .docChanges()
           .forEach((changedDoc: DocumentChange) => {
-            callbackFunction(changedDoc.type, changedDoc.doc.data());
+            const participantDoc: DocumentData = changedDoc.doc.data();
+            participantDoc['joinTime'] = participantDoc['joinTime'].toDate();
+            callbackFunction(changedDoc.type, participantDoc);
           });
       }
     );
@@ -69,7 +73,7 @@ export class ParticipantCollectionService {
     videoEnabled: boolean,
     micEnabled: boolean,
     handRaised: boolean
-  ): Promise<void> {
+  ): Promise<Date> {
     const participantDoc: ParticipantDoc = {
       participantName: participantName,
       participantId: participantId,
@@ -77,6 +81,7 @@ export class ParticipantCollectionService {
       micEnabled: micEnabled,
       handRaised: handRaised,
       joinTime: Timestamp.now(),
+      state: 'new',
     };
     const partcipantCollectionPath: string = new Collections().participants(
       meetingId
@@ -90,6 +95,7 @@ export class ParticipantCollectionService {
       participantId
     );
     await setDoc(newParticipantDocRef, participantDoc);
+    return participantDoc.joinTime.toDate();
   }
 
   async updateParticipantData(
@@ -112,6 +118,7 @@ export class ParticipantCollectionService {
       videoEnabled: videoEnabled,
       micEnabled: micEnabled,
       handRaised: handRaised,
+      state: 'updated',
     });
   }
 }

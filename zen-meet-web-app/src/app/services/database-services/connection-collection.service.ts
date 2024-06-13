@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   Firestore,
   addDoc,
@@ -12,14 +12,16 @@ import {
   DocumentData,
   DocumentChange,
   QuerySnapshot,
-} from "@angular/fire/firestore";
+} from '@angular/fire/firestore';
 
 export class CollectionPath {
-  meetingCollection = "meetings";
+  meetingCollection = 'meetings';
   connCollection = (meetingId: string) =>
     `${this.meetingCollection}/${meetingId}/connections`;
   connDoc = (meetingId: string, connectionId: string) =>
     `${this.connCollection(meetingId)}/${connectionId}`;
+  connCallsCollection = (meetingId: string, connectionId: string) =>
+    `${this.connDoc(meetingId, connectionId)}/calls`;
   connOfferCandidatesCollection = (meetingId: string, connectionId: string) =>
     `${this.connDoc(meetingId, connectionId)}/offerCandidates`;
   connAnswerCandidatesCollection = (meetingId: string, connectionId: string) =>
@@ -30,29 +32,27 @@ export interface ConnectionDoc {
   connectionId: string;
 }
 
+export interface CallDoc {
+  sessionTimeId: number;
+  data: any;
+  type: 'answer' | 'offer';
+}
+
+export interface CandidateDoc {
+  sessionTimeId: number;
+  candidateData: RTCIceCandidateInit;
+}
+
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ConnectionCollectionService {
   constructor(public firestore: Firestore) {}
 
-  async addConnection(meetingId: string, connectionId: string) {
-    const connCollectionPath: string = new CollectionPath().connCollection(
-      meetingId
-    );
-    const connectionsCollectionRef: CollectionReference = collection(
-      this.firestore,
-      connCollectionPath
-    );
-
-    const connDocRef = doc(connectionsCollectionRef, connectionId);
-    const connectionDoc: ConnectionDoc = { connectionId: connectionId };
-    setDoc(connDocRef, connectionDoc);
-  }
-
   async addOfferCandidate(
     meetingId: string,
     connectionId: string,
+    sessionTimeId: number,
     offerCandidateData: RTCIceCandidateInit
   ): Promise<void> {
     const connOfferCandidatesCollectionPath: string =
@@ -64,12 +64,17 @@ export class ConnectionCollectionService {
       this.firestore,
       connOfferCandidatesCollectionPath
     );
-    await addDoc(connOfferCandidatesCollectionRef, offerCandidateData);
+    const candidateData: CandidateDoc = {
+      sessionTimeId: sessionTimeId,
+      candidateData: offerCandidateData,
+    };
+    await addDoc(connOfferCandidatesCollectionRef, candidateData);
   }
 
   async addAnswerCandidate(
     meetingId: string,
     connectionId: string,
+    sessionTimeId: number,
     answerCandidateData: RTCIceCandidateInit
   ): Promise<void> {
     const connAnswerCandidatesCollectionPath: string =
@@ -81,85 +86,54 @@ export class ConnectionCollectionService {
       this.firestore,
       connAnswerCandidatesCollectionPath
     );
-    await addDoc(connAnswerCandidatesCollectionRef, answerCandidateData);
+
+    const candidateData: CandidateDoc = {
+      sessionTimeId: sessionTimeId,
+      candidateData: answerCandidateData,
+    };
+    await addDoc(connAnswerCandidatesCollectionRef, candidateData);
   }
 
-  async setConnectionOfferData(
+  async addCallData(
     meetingId: string,
     connectionId: string,
-    offer: RTCSessionDescriptionInit
+    type: 'offer' | 'answer',
+    sessionTimeId: number,
+    callData: RTCSessionDescriptionInit
   ): Promise<void> {
-    const connCollectionPath: string = new CollectionPath().connCollection(
-      meetingId
-    );
-    const connectionsCollectionRef: CollectionReference = collection(
-      this.firestore,
-      connCollectionPath
-    );
-    const connDocRef = doc(connectionsCollectionRef, connectionId);
+    const connCallsCollectionPath: string =
+      new CollectionPath().connCallsCollection(meetingId, connectionId);
 
-    await setDoc(connDocRef, { offer });
+    const connCallCollectionRef: CollectionReference = collection(
+      this.firestore,
+      connCallsCollectionPath
+    );
+    const connCallDocRef = doc(connCallCollectionRef, type);
+    const callDoc: CallDoc = {
+      sessionTimeId: sessionTimeId,
+      data: callData,
+      type: type,
+    };
+
+    await setDoc(connCallDocRef, callDoc);
   }
 
-  async updateConnectionAnwserData(
+  attachCallsSnapshotListner(
     meetingId: string,
     connectionId: string,
-    answer: RTCSessionDescriptionInit
-  ): Promise<void> {
-    const connCollectionPath: string = new CollectionPath().connCollection(
-      meetingId
-    );
-    const connectionsCollectionRef: CollectionReference = collection(
+    callbackFunction: Function
+  ) {
+    const connCallsCollectionPath: string =
+      new CollectionPath().connCallsCollection(meetingId, connectionId);
+    const connCallCollectionRef: CollectionReference = collection(
       this.firestore,
-      connCollectionPath
+      connCallsCollectionPath
     );
-    const connDocRef = doc(connectionsCollectionRef, connectionId);
-
-    await updateDoc(connDocRef, { answer });
-  }
-
-  async getConnectionOfferData(
-    meetingId: string,
-    connectionId: string
-  ): Promise<RTCSessionDescriptionInit | undefined> {
-    const connCollectionPath: string = new CollectionPath().connCollection(
-      meetingId
-    );
-    const connectionsCollectionRef: CollectionReference = collection(
-      this.firestore,
-      connCollectionPath
-    );
-    const connDocRef = doc(connectionsCollectionRef, connectionId);
-    const connDocData: DocumentData | undefined = (
-      await getDoc(connDocRef)
-    ).data();
-
-    if (connDocData) {
-      return connDocData["offer"];
-    }
-    return undefined;
-  }
-
-  async getConnectionAnswerData(
-    meetingId: string,
-    connectionId: string
-  ): Promise<RTCSessionDescriptionInit | undefined> {
-    const connCollectionPath: string = new CollectionPath().connCollection(
-      meetingId
-    );
-    const connectionsCollectionRef: CollectionReference = collection(
-      this.firestore,
-      connCollectionPath
-    );
-    const connDocRef = doc(connectionsCollectionRef, connectionId);
-    const connDocData: DocumentData | undefined = (
-      await getDoc(connDocRef)
-    ).data();
-
-    if (connDocData) {
-      return connDocData["answer"];
-    }
-    return undefined;
+    onSnapshot(connCallCollectionRef, (callsSnapshot: QuerySnapshot): void => {
+      callsSnapshot.docChanges().forEach((changedDoc: DocumentChange) => {
+        callbackFunction(changedDoc.type, changedDoc.doc.data());
+      });
+    });
   }
 
   attachOfferCandidateSnapshotListner(

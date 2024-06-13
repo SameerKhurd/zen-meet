@@ -1,29 +1,35 @@
-import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
-import { Meeting, MeetingService } from "../../services/meeting.service";
-import { InvitePeopleDailogComponent } from "../../dailog-modals/invite-people-dailog/invite-people-dailog.component";
-import { MatDialog } from "@angular/material/dialog";
+import { Meeting, MeetingService } from '../../services/meeting.service';
+import { InvitePeopleDailogComponent } from '../../dailog-modals/invite-people-dailog/invite-people-dailog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: "app-meeting-main",
-  templateUrl: "./meeting-main.component.html",
-  styleUrls: ["./meeting-main.component.scss"],
+  selector: 'app-meeting-main',
+  templateUrl: './meeting-main.component.html',
+  styleUrls: ['./meeting-main.component.scss'],
 })
-export class MeetingMainComponent {
+export class MeetingMainComponent implements OnInit {
   joinedMeeting = false;
   isInvalidName = false;
-  userMeetingId = "";
-  status: "new" | "not-found" | "loading" | "error" = "new";
-  joinStatus: "new" | "loading" | "error" = "new";
+  userMeetingId = '';
+  status: 'new' | 'not-found' | 'loading' | 'error' = 'new';
+  joinStatus: 'new' | 'loading' | 'error' = 'new';
 
   constructor(
-    route: ActivatedRoute,
+    private route: ActivatedRoute,
     public meetingService: MeetingService,
     public dialog: MatDialog
-  ) {
-    let meetingId = route.snapshot.paramMap.get("meetingId");
-    meetingId = meetingId ? meetingId : "";
+  ) {}
+  
+  ngOnInit(): void {
+    let meetingId = this.route.snapshot.paramMap.get('meetingId');
+    console.log('called', meetingId);
+    meetingId = meetingId ? meetingId : '';
+
+    this.meetingService.meetingStatus = 'not-joined';
+
     this.userMeetingId = meetingId;
     //this.meetingService.setMeetingDetails(meetingId, "temp meeting name");
     this.getMeetingDetails(meetingId);
@@ -40,36 +46,36 @@ export class MeetingMainComponent {
   }
 
   getMeetingDetails(meetingId: string) {
-    this.status = "loading";
+    this.status = 'loading';
     this.meetingService
       .getMeetingDetails(meetingId)
       .then((meetingDetails: Meeting | undefined) => {
         if (meetingDetails) {
-          this.status = "new";
+          this.status = 'new';
           this.meetingService.setMeetingDetails(
             meetingId,
             meetingDetails.meetingName
           );
         } else {
-          this.status = "not-found";
+          this.status = 'not-found';
         }
       })
       .catch(() => {
-        this.status = "error";
+        this.status = 'error';
       });
   }
 
   onJoinMeeting() {
     this.validateUserParticipantName();
-    if (!this.isInvalidName) this.joinStatus = "loading";
+    if (!this.isInvalidName) this.joinStatus = 'loading';
     this.meetingService
       .joinMeeting()
       .then(() => {
-        this.joinStatus = "new";
+        this.joinStatus = 'new';
         this.joinedMeeting = true;
       })
       .catch(() => {
-        this.joinStatus = "error";
+        this.joinStatus = 'error';
       });
   }
 }
