@@ -45,6 +45,29 @@ span.video-description {
   background-color: rgba(0, 0, 0, 0.545);
 }
 
+.screen-share-info {
+  position: absolute;
+  //bottom: -55px;
+  top: 0px;
+  left: 0px;
+  //background-color: #31323cc8;
+  font-size: small;
+  //border: 1px solid #4141419c;
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.screen-share-buttons {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  //background-color: #31323cc8;
+  font-size: small;
+  //border: 1px solid #4141419c;
+  z-index: 1;
+}
+
 .bottom-right-video {
   position: absolute;
   bottom: 0;

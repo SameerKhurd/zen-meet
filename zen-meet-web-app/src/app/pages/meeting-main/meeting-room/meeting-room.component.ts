@@ -21,6 +21,7 @@ import { connectionStatus } from 'src/app/services/connection/rtc-connection/rtc
 })
 export class MeetingRoomComponent {
   @ViewChild('meetingTiles') elementView!: ElementRef;
+  isExpand = false;
   connectionStatus = connectionStatus;
   tilesHeight = 0;
   tilesWidth = 0;
@@ -31,6 +32,7 @@ export class MeetingRoomComponent {
   meetingSideSection: { section: 'hide' | 'people' | 'message' } = {
     section: 'people',
   };
+  screenShareParticipantName = '';
 
   constructor(
     public mediaService: MediaService,
@@ -61,25 +63,61 @@ export class MeetingRoomComponent {
         peerParticipant.connection.status === connectionStatus.CONNECTED ||
         peerParticipant.connection.status === connectionStatus.WAITING
     );
+
+    this.computeTileDimensions();
+
+    if (this.meetingService.screenSharing.isEnabled) {
+      if (this.meetingService.screenSharing.isUserScreenSharing) {
+        this.mediaService.localScreenShareMediaStream;
+        this.screenShareParticipantName = 'You are';
+      } else {
+        const peerParticipant: PeerParticipant =
+          this.meetingService.partcipantsMap[
+            this.meetingService.screenSharing.currScreenSharingParticipantId
+          ];
+        this.screenShareParticipantName = `${peerParticipant.participantName} is`;
+      }
+    }
+  }
+
+  onScreenShareExpand() {
+    this.isExpand = !this.isExpand;
     this.computeTileDimensions();
   }
 
-  private computeTileDimensions() {
-    this.tilesHeight = Math.floor(
-      this.elementView.nativeElement.offsetHeight * 0.9
-    );
-    this.tilesWidth = Math.floor(
-      this.elementView.nativeElement.offsetWidth * 0.9
-    );
-    const divideFactor: number = Math.ceil(
-      Math.sqrt(this.currPeerPartcipants.length)
-    );
-    this.videoTileWidth = Math.floor(this.tilesWidth / divideFactor);
-    this.videoTileHeight = Math.floor((this.videoTileWidth * 3) / 4);
+  async onScreenShareToggle() {
+    this.meetingService.screenSharing.isUserScreenSharing
+      ? this.meetingService.stopScreenShare()
+      : this.meetingService.startScreenShare();
+  }
 
-    if (this.videoTileHeight * divideFactor > this.tilesHeight) {
-      this.videoTileHeight = Math.floor(this.tilesHeight / divideFactor);
-      this.videoTileWidth = Math.floor((this.videoTileHeight * 4) / 3);
+  private computeTileDimensions() {
+    if (this.isExpand) {
+      this.videoTileHeight = Math.floor(
+        this.elementView.nativeElement.offsetHeight * 0.9
+      );
+      this.videoTileWidth = Math.floor(
+        this.elementView.nativeElement.offsetWidth * 0.9
+      );
+    } else {
+      let totalParticipants = this.currPeerPartcipants.length;
+      if (this.meetingService.screenSharing.isEnabled) {
+        totalParticipants++;
+      }
+      this.tilesHeight = Math.floor(
+        this.elementView.nativeElement.offsetHeight * 0.9
+      );
+      this.tilesWidth = Math.floor(
+        this.elementView.nativeElement.offsetWidth * 0.9
+      );
+      const divideFactor: number = Math.ceil(Math.sqrt(totalParticipants));
+      this.videoTileWidth = Math.floor(this.tilesWidth / divideFactor);
+      this.videoTileHeight = Math.floor((this.videoTileWidth * 3) / 4);
+
+      if (this.videoTileHeight * divideFactor > this.tilesHeight) {
+        this.videoTileHeight = Math.floor(this.tilesHeight / divideFactor);
+        this.videoTileWidth = Math.floor((this.videoTileHeight * 4) / 3);
+      }
     }
   }
 

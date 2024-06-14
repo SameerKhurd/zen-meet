@@ -91,6 +91,12 @@ export class MeetingParticipantsComponent {
     this.meetingService.updatePartcipant();
   }
 
+  async onScreenShareToggle() {
+    this.meetingService.screenSharing.isUserScreenSharing
+      ? this.meetingService.stopScreenShare()
+      : this.meetingService.startScreenShare();
+  }
+
   async onMicToggle() {
     if (this.mediaService.micStatus === mediaStatus.ENABLED) {
       this.mediaService.stopMic();

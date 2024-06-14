@@ -4,15 +4,15 @@
     Device Settings
   </div> -->
   <div class="row p-2">
-    <div class="p-2 col-6 justify-content-center">
-      <div class="ms-auto d-flex video-container-width pb-4">
+    <div class="p-2 col-md-6 justify-content-center">
+      <div class="d-flex pb-4">
         <div class="h5 fw-bold">
           <i class="bi bi-gear pe-2 align-middle" style="font-size: 1.2rem"></i>
           Device Settings
         </div>
       </div>
 
-      <div class="video-container rounded-1 ms-auto me-2">
+      <div class="video-container rounded-1">
         <ng-container [ngSwitch]="mediaService.cameraStatus">
           <ng-container *ngSwitchCase="mediaStatus.ERROR"></ng-container>
           <ng-container *ngSwitchCase="mediaStatus.LOADING">
@@ -43,15 +43,18 @@
         </ng-container>
       </div>
 
-      <div
-        class="ms-auto d-flex justify-content-center video-container-width pt-2"
-      >
+      <div class="d-flex justify-content-center pt-2">
         <div class="p-2 px-3">
           <mat-slide-toggle
             color="accent"
             [checked]="mediaService.cameraStatus === mediaStatus.ENABLED"
             [disabled]="mediaService.cameraStatus === mediaStatus.LOADING"
             (change)="onCameraToggle()"
+            [matTooltip]="
+              mediaService.cameraStatus === mediaStatus.ENABLED
+                ? 'Turn Camera Off'
+                : 'Turn Camera On'
+            "
           >
             <div
               *ngIf="
@@ -81,6 +84,11 @@
             [checked]="mediaService.micStatus === mediaStatus.ENABLED"
             [disabled]="mediaService.micStatus === mediaStatus.LOADING"
             (change)="onMicToggle()"
+            [matTooltip]="
+              mediaService.micStatus === mediaStatus.ENABLED
+                ? 'Turn Mic Off'
+                : 'Turn Mic On'
+            "
           >
             <div
               *ngIf="
@@ -106,11 +114,11 @@
         </div>
       </div>
     </div>
-    <div class="p-2 px-3 col-6">
+    <div class="p-2 col-md-6">
       <div class="py-4"></div>
-      <div class="ps-2 pt-1 ms-3">
+      <div class="pt-1 ms-3">
         <div class="">Video Settings</div>
-        <div class="pt-3 ps-2">
+        <div class="pt-3 ps-1">
           <small>
             <i
               class="bi bi-camera-video px-2 align-middle"
@@ -121,7 +129,7 @@
         </div>
         <select
           (change)="onCameraSelect()"
-          class="form-select form-select-sm bg-dark cust-text-secondary ms-3 mt-2"
+          class="form-select form-select-sm bg-dark cust-text-secondary ms-2 mt-2"
           [(ngModel)]="this.mediaService.camera"
         >
           <option
@@ -132,7 +140,7 @@
           </option>
         </select>
         <div class="pt-4 mt-2">Audio Settings</div>
-        <div class="pt-3 ps-2">
+        <div class="pt-3 ps-1">
           <small>
             <i
               class="bi bi-volume-up px-2 align-middle"
@@ -142,7 +150,7 @@
           </small>
         </div>
         <select
-          class="form-select form-select-sm bg-dark cust-text-secondary ms-3 mt-2"
+          class="form-select form-select-sm bg-dark cust-text-secondary ms-2 mt-2"
           (change)="onSpeakarSelect()"
           [(ngModel)]="this.mediaService.speakar"
         >
@@ -153,7 +161,7 @@
             {{ speakar.label }}
           </option>
         </select>
-        <div class="pt-4 ps-2">
+        <div class="pt-4 ps-1">
           <small>
             <i
               class="bi bi-mic px-2 align-middle"
@@ -164,7 +172,7 @@
         </div>
         <select
           (change)="onMicSelect()"
-          class="form-select form-select-sm bg-dark cust-text-secondary ms-3 mt-2"
+          class="form-select form-select-sm bg-dark cust-text-secondary ms-2 mt-2"
           [(ngModel)]="this.mediaService.mic"
         >
           <option [ngValue]="mic" *ngFor="let mic of deviceMedia?.mics">

@@ -54,6 +54,14 @@ export class ConnectionService {
     this.rtcConnection.updateConnectionAudioMediaTrack(localMediaStream);
   }
 
+  addConnectionLocalMediaStream(localMediaStream: MediaStream) {
+    this.rtcConnection.addLocalMediaStreamToMeshConnection(localMediaStream);
+  }
+
+  removeConnectionLocalMediaStream() {
+    this.rtcConnection.removeMediaTrack();
+  }
+
   closeConnection() {
     this.rtcConnection.closeConnection();
   }

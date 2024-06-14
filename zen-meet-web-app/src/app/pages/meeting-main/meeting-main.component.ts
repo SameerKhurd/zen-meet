@@ -22,10 +22,9 @@ export class MeetingMainComponent implements OnInit {
     public meetingService: MeetingService,
     public dialog: MatDialog
   ) {}
-  
+
   ngOnInit(): void {
     let meetingId = this.route.snapshot.paramMap.get('meetingId');
-    console.log('called', meetingId);
     meetingId = meetingId ? meetingId : '';
 
     this.meetingService.meetingStatus = 'not-joined';
@@ -67,15 +66,17 @@ export class MeetingMainComponent implements OnInit {
 
   onJoinMeeting() {
     this.validateUserParticipantName();
-    if (!this.isInvalidName) this.joinStatus = 'loading';
-    this.meetingService
-      .joinMeeting()
-      .then(() => {
-        this.joinStatus = 'new';
-        this.joinedMeeting = true;
-      })
-      .catch(() => {
-        this.joinStatus = 'error';
-      });
+    if (!this.isInvalidName) {
+      this.joinStatus = 'loading';
+      this.meetingService
+        .joinMeeting()
+        .then(() => {
+          this.joinStatus = 'new';
+          this.joinedMeeting = true;
+        })
+        .catch(() => {
+          this.joinStatus = 'error';
+        });
+    }
   }
 }

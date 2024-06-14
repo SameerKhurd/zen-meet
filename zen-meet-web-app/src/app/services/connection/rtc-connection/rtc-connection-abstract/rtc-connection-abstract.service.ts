@@ -40,6 +40,11 @@ export abstract class RTCConnectionAbstractService {
     this.replaceConnectionMediaTrack(localMediaStream, 'getAudioTracks');
   }
 
+  removeMediaTrack() {
+    const senders = this.peerConnection.getSenders();
+    senders.forEach((sender) => this.peerConnection.removeTrack(sender));
+  }
+
   closeConnection() {
     this.removeConnectionEventHandlers();
     this.status = connectionStatus.CLOSED;

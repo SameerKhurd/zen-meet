@@ -141,6 +141,12 @@ export class MeetingControlButtonComponent implements OnInit {
     this.meetingService.updatePartcipant();
   }
 
+  async onScreenShareToggle() {
+    this.meetingService.screenSharing.isUserScreenSharing
+      ? this.meetingService.stopScreenShare()
+      : this.meetingService.startScreenShare();
+  }
+
   private startMeetingTimer() {
     setInterval(() => {
       this.meetingService.meetingTimer++;
