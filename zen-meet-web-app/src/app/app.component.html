@@ -3,7 +3,7 @@
   style="border-bottom: 1px solid #252525"
 >
   <div class="container-fluid">
-    <div class="d-flex p-2">
+    <div class="d-flex p-2 w-100">
       <div class="align-self-center pe-4 me-4">
         <a
           class="navbar-branda text-secondary text-decoration-none"
@@ -45,98 +45,65 @@
           <span class="font-sm"> New meeting</span>
         </a>
       </div>
+
+      <div class="ms-auto align-self-center">
+        <span>
+          <small>
+            <a
+              class="align-middle pe-3 me-3 border-end pe-enabled border-secondary text-decoration-none"
+              target="_blank"
+              href="/"
+            >
+              ZenMeet System Design Blog
+            </a>
+          </small>
+        </span>
+
+        <span>
+          <small>
+            <a
+              class="align-middle pe-3 me-3 border-end pe-enabled border-secondary"
+              target="_blank"
+              href="https://github.com/SameerKhurd/zen-meet"
+            >
+              <i class="align-middle bi bi-github" style="font-size: 1rem"></i
+            ></a>
+          </small>
+        </span>
+        <span>
+          <small>
+            <a
+              class="align-middle pe-3 me-3 border-end pe-enabled border-secondary"
+              target="_blank"
+              href="https://www.linkedin.com/in/sameer-khurd"
+            >
+              <i
+                class="bi bi-linkedin align-middle pe-1"
+                style="font-size: 1rem"
+              ></i>
+            </a>
+          </small>
+        </span>
+        <span>
+          <small>
+            <i
+              class="bi bi-stars align-middle pe-1 fw-boeld text-warning"
+              style="font-size: 1rem"
+            ></i
+            ><span class="pe-enabled align-middle txt-secondary">
+              <a
+                class="pe-enabled text-decoration-none"
+                target="_blank"
+                href="https://www.linkedin.com/in/sameer-khurd"
+              >
+                Developed by <strong> Sameer Khurd </strong></a
+              ></span
+            >
+          </small>
+        </span>
+      </div>
     </div>
-    <!-- <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button> -->
-    
   </div>
 </nav>
 
 <router-outlet></router-outlet>
-<!-- <app-meeting></app-meeting> -->
-<!-- <button color="primary" (click)="video()">Video</button>
-<button color="primary" (click)="mic()">Mic</button>
-<button color="primary" (click)="startMeeting()">startMeeting</button>
-<button color="primary" (click)="joinMeeting()">joinMeeting</button>
-<input [(ngModel)]="this.videoService.meetingId" />
-<input [(ngModel)]="this.videoService.participantId" />
-
-<br />
-<button
-  *ngFor="let videoDevice of videoService.availableVideoDevices"
-  (click)="onVideoDeviceSelect(videoDevice)"
->
-  {{ videoDevice.label }}
-</button>
-DmdTwzyN9j3EaEokTRLA
-<h2>1. Start your Webcam</h2>
-<div class="videos">
-  <span>
-    <h3>Local Stream</h3>
-    <video
-      [srcObject]="videoService.localStream"
-      [autoplay]="true"
-      [muted]="true"
-    ></video>
-    <div>
-      Video: {{ videoService.localStream?.getVideoTracks()[0].enabled }}
-    </div>
-    <div>Mic: {{ videoService.localStream?.getAudioTracks()[0].enabled }}</div>
-  </span>
-  length = {{ videoService.partcipants.length }}
-  <div *ngFor="let peer of videoService.partcipants; let i = index">
-    <h3>{{ i + 1 }} {{ peer.participant.participantId }}</h3>
-
-    <div [ngSwitch]="peer.status">
-      <div *ngSwitchCase="'new'">output</div>
-      <div *ngSwitchCase="'connected'">
-        <video [srcObject]="peer.remoteStream" [autoplay]="true"></video>
-        <div>Video: {{ peer.remoteStream.getVideoTracks()[0].enabled }}</div>
-        <div>Mic: {{ peer.remoteStream.getAudioTracks()[0].enabled }}</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<button (click)="onWebcam()">Start webcam</button>
-<h2>2. Create a new Call</h2>
-<button id="callButton" disabled>Create Call (offer)</button>
-
-<h2>3. Join a Call</h2>
-<p>Answer the call from a different browser window or device</p>
-
-<input id="callInput" />
-<button id="answerButton" disabled>Answer</button>
-
-<h2>4. Hangup</h2>
-
-<button id="hangupButton" disabled>Hangup</button> -->
-
-<!-- <div class="container">
-  <h1> add robot </h1>
-  <form (ngSubmit)="addRobot(name, color, age)">
-      <p> name </p>
-      <input name="name" [(ngModel)]="name">
-      <p> color </p>
-      <input name="color" [(ngModel)]="color">
-      <p> age </p>
-      <input name="age" [(ngModel)]="age">
-      <button type="submit"> submit </button>
-  </form>
-</div>
-
-<div *ngFor="let robot of robots">
-  <h3> {{ robot.name }} </h3>
-  <p> color: {{ robot.color }} </p>
-  <p> age: {{ robot.age }} </p>
-<!-- </div>  -->

@@ -205,15 +205,15 @@
     transform: translateX(75px);
     opacity: 0;
   }
-  10% {
+  8% {
     transform: translateX(0);
     opacity: 1;
   }
-  20% {
+  16% {
     transform: translateX(0);
     opacity: 1;
   }
-  30% {
+  24% {
     transform: translateX(-75px);
     opacity: 0;
   }
@@ -270,7 +270,7 @@
 
   //left: calc(50% - 100px);
   opacity: 0;
-  animation: display 15s infinite;
+  animation: display 18s infinite;
 }
 
 .pic-box-shadow {
@@ -291,3 +291,7 @@ img:nth-child(4) {
 img:nth-child(5) {
   animation-delay: 12s !important;
 }
+img:nth-child(6) {
+  animation-delay: 15s !important;
+}
+

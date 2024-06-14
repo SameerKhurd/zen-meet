@@ -38,7 +38,6 @@ export class NewMeetingDailogComponent {
         .startNewMeeting(this.userMeetingName)
         .then(() => {
           //this.meetingService.initializeMeetingParameters();
-          console.log('>>>>>', this.meetingService.meetingId);
           this.router.navigate(['meeting', this.meetingService.meetingId]);
           this.status = 'new';
           this.dialogRef.disableClose = false;

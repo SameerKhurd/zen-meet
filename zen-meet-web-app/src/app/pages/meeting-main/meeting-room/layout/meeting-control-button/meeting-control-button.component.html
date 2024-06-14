@@ -138,7 +138,36 @@
     </button>
   </div>
 
-  <div class="text-secondary align-middle h3 px-1"></div>
+  <div>
+    <button
+      class="btn btn-sm p-0 px-1 control-button"
+      [disabled]="mediaService.micStatus === mediaStatus.LOADING"
+      (click)="onScreenShareToggle()"
+    >
+      <i
+        class="button-icon bi"
+        [ngClass]="
+          this.meetingService.screenSharing.isUserScreenSharing
+            ? 'bi-x-square-fill text-danger'
+            : 'bi-arrow-up-square-fill'
+        "
+      ></i>
+      <div
+        class="button-label"
+        [ngClass]="{
+          'text-danger': this.meetingService.screenSharing.isUserScreenSharing
+        }"
+      >
+        {{
+          this.meetingService.screenSharing.isUserScreenSharing
+            ? "Stop Sharing"
+            : "Share"
+        }}
+      </div>
+    </button>
+  </div>
+
+  <div class="text-secondary align-middle h3 px-2"></div>
 
   <div>
     <button

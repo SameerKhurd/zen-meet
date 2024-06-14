@@ -48,120 +48,115 @@
             </div>
           </div>
 
-          <!-- Participant tiles -->
           <ng-template #participantTiles>
+            <!-- Screen share Video  Section -->
             <div
-              *ngFor="let peerParticipant of currPeerPartcipants"
+              *ngIf="meetingService.screenSharing.isEnabled"
               [style.height]="videoTileHeight + 'px'"
               [style.width]="videoTileWidth + 'px'"
-              style="position: relative"
             >
-              <!-- Emoji Reaction Overlap Section -->
               <div
-                *ngIf="peerParticipant.emojiReacted"
-                class="elementToFadeInAndOut display-2 text-center"
-              >
-                {{ peerParticipant.emojiReaction }}
-              </div>
-
-              <!-- Partcipant Video Enabled Section -->
-              <ng-container
-                *ngIf="
-                  peerParticipant.videoEnabled &&
-                    peerParticipant.connection.status ==
-                      connectionStatus.CONNECTED;
-                  else peerVideoDisabledTemplate
-                "
+                class="mt-1 ms-1 shadow d-inline-block p-1 rounded-3 border border-3 border-transparent"
+                style="position: relative"
               >
                 <div
-                  class="mt-1 ms-1 shadow d-inline-block p-1 rounded-3 border border-3"
-                  [ngClass]="
-                    peerParticipant.connection.audioReceiver?.getSynchronizationSources()[0]
-                      ?.audioLevel! > 0.005
-                      ? ' border-speaking'
-                      : peerParticipant.handRaised
-                      ? ' border-warning hand-raised-avatar'
-                      : 'border-transparent'
+                  class="screen-share-info m-0 px-0 p-1 text-light d-flex justify-content-between w-100 rounded-top"
+                >
+                  <div></div>
+                  <div>
+                    <i
+                      class="bi bi-arrow-up-square-fill align-middle text-success pe-1"
+                    ></i>
+
+                    <small class="text-success align-middle">
+                      <strong>
+                        {{ screenShareParticipantName }} Sharing Screen
+                      </strong>
+                    </small>
+
+                    <button
+                      *ngIf="meetingService.screenSharing.isUserScreenSharing"
+                      class="btn btn-sm p-0 border-0 btn-outline-light px-1 mx-1"
+                      (click)="onScreenShareToggle()"
+                    >
+                      <small> Stop Sharing </small>
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      class="btn btn-sm p-0 border-0 btn-light me-2"
+                      (click)="onScreenShareExpand()"
+                      [matTooltip]="isExpand ? 'Minimize' : 'Expand'"
+                    >
+                      <i
+                        class="bi px-1"
+                        style="font-size: 0.7rem"
+                        [ngClass]="
+                          isExpand
+                            ? 'bi-arrows-angle-contract'
+                            : 'bi-arrows-angle-expand'
+                        "
+                      ></i>
+                    </button>
+                  </div>
+                </div>
+                <video
+                  class="rounded-1"
+                  style="object-fit: contain"
+                  [style.height]="videoTileHeight + 'px'"
+                  [style.width]="videoTileWidth + 'px'"
+                  [srcObject]="
+                    meetingService.screenSharing.isUserScreenSharing
+                      ? mediaService.localScreenShareMediaStream
+                      : meetingService.partcipantsMap[
+                          meetingService.screenSharing
+                            .currScreenSharingParticipantId
+                        ].screenShareConnection?.remoteMediaStream
+                  "
+                  [autoplay]="true"
+                ></video>
+              </div>
+            </div>
+
+            <!-- Participant tiles -->
+            <ng-container *ngIf="!isExpand">
+              <div
+                *ngFor="let peerParticipant of currPeerPartcipants"
+                [style.height]="videoTileHeight + 'px'"
+                [style.width]="videoTileWidth + 'px'"
+                style="position: relative"
+              >
+                <!-- Emoji Reaction Overlap Section -->
+                <div
+                  *ngIf="peerParticipant.emojiReacted"
+                  class="elementToFadeInAndOut display-2 text-center"
+                >
+                  {{ peerParticipant.emojiReaction }}
+                </div>
+
+                <!-- Partcipant Video Enabled Section -->
+                <ng-container
+                  *ngIf="
+                    peerParticipant.videoEnabled &&
+                      peerParticipant.connection.status ==
+                        connectionStatus.CONNECTED;
+                    else peerVideoDisabledTemplate
                   "
                 >
                   <div
-                    class="bottom-left p-1 px-2 rounded-pill text-light shadow ms-3 mb-1"
+                    class="mt-1 ms-1 shadow d-inline-block p-1 rounded-3 border border-3"
+                    [ngClass]="
+                      peerParticipant.connection.audioReceiver?.getSynchronizationSources()[0]
+                        ?.audioLevel! > 0.005
+                        ? ' border-speaking'
+                        : peerParticipant.handRaised
+                        ? ' border-warning hand-raised-avatar'
+                        : 'border-transparent'
+                    "
                   >
-                    <i
-                      *ngIf="peerParticipant.handRaised"
-                      class="bi bi-hand-index-thumb-fill text-warning pe-1"
-                    ></i>
-                    <i
-                      class="button-icon bi pe-2"
-                      [ngClass]="
-                        peerParticipant.micEnabled
-                          ? 'bi-mic-fill'
-                          : 'bi-mic-mute-fill'
-                      "
-                    ></i>
-                    <small>{{ peerParticipant.participantName }}</small>
-                  </div>
-                  <video
-                    class="rounded-1"
-                    [style.height]="videoTileHeight + 'px'"
-                    [style.width]="videoTileWidth + 'px'"
-                    [srcObject]="peerParticipant.connection.remoteMediaStream"
-                    [autoplay]="true"
-                  ></video>
-                </div>
-              </ng-container>
-
-              <!-- Partcipant Video Disabled Section -->
-              <ng-template #peerVideoDisabledTemplate>
-                <div
-                  class="text-light pt-2 d-flex align-items-center justify-content-center"
-                  [style.height]="videoTileHeight + 'px'"
-                  [style.width]="videoTileWidth + 'px'"
-                >
-                  <div>
-                    <div style="position: relative">
-                      <div
-                        *ngIf="
-                          peerParticipant.connection.status ==
-                          connectionStatus.WAITING
-                        "
-                        class="connecting text-light d-flex justify-content-center rounded-circle"
-                      >
-                        <div class="align-self-center">Connecting...</div>
-                      </div>
-                      <div
-                        class="text-center rounded-circle border border-3"
-                        style="width: 8.35rem; height: 8.35rem"
-                        [ngClass]="
-                          peerParticipant.connection.audioReceiver?.getSynchronizationSources()[0]
-                            ?.audioLevel! > 0.005
-                            ? ' border-speaking'
-                            : peerParticipant.handRaised
-                            ? ' border-warning hand-raised-avatar'
-                            : 'border-transparent'
-                        "
-                      >
-                        <div>
-                          <small
-                            class="particpant-avatar text-uppercase p-1"
-                            ngClass="participant-color-{{
-                              (peerParticipant.roll % 5) + 1
-                            }}  {{
-                              peerParticipant.connection.status ==
-                              connectionStatus.CONNECTED
-                                ? 'box-shadow-default'
-                                : ''
-                            }} "
-                            >{{
-                              splitPartcipantName(
-                                peerParticipant.participantName
-                              )
-                            }}</small
-                          >
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mt-3 rounded-2 text-light text-center me-2">
+                    <div
+                      class="bottom-left p-1 px-2 rounded-pill text-light shadow ms-3 mb-1"
+                    >
                       <i
                         *ngIf="peerParticipant.handRaised"
                         class="bi bi-hand-index-thumb-fill text-warning pe-1"
@@ -176,10 +171,86 @@
                       ></i>
                       <small>{{ peerParticipant.participantName }}</small>
                     </div>
+                    <video
+                      class="rounded-1"
+                      [style.height]="videoTileHeight + 'px'"
+                      [style.width]="videoTileWidth + 'px'"
+                      [srcObject]="peerParticipant.connection.remoteMediaStream"
+                      [autoplay]="true"
+                    ></video>
                   </div>
-                </div>
-              </ng-template>
-            </div>
+                </ng-container>
+
+                <!-- Partcipant Video Disabled Section -->
+                <ng-template #peerVideoDisabledTemplate>
+                  <div
+                    class="text-light pt-2 d-flex align-items-center justify-content-center"
+                    [style.height]="videoTileHeight + 'px'"
+                    [style.width]="videoTileWidth + 'px'"
+                  >
+                    <div>
+                      <div style="position: relative">
+                        <div
+                          *ngIf="
+                            peerParticipant.connection.status ==
+                            connectionStatus.WAITING
+                          "
+                          class="connecting text-light d-flex justify-content-center rounded-circle"
+                        >
+                          <div class="align-self-center">Connecting...</div>
+                        </div>
+                        <div
+                          class="text-center rounded-circle border border-3"
+                          style="width: 8.35rem; height: 8.35rem"
+                          [ngClass]="
+                            peerParticipant.connection.audioReceiver?.getSynchronizationSources()[0]
+                              ?.audioLevel! > 0.005
+                              ? ' border-speaking'
+                              : peerParticipant.handRaised
+                              ? ' border-warning hand-raised-avatar'
+                              : 'border-transparent'
+                          "
+                        >
+                          <div>
+                            <small
+                              class="particpant-avatar text-uppercase p-1"
+                              ngClass="participant-color-{{
+                                (peerParticipant.roll % 5) + 1
+                              }}  {{
+                                peerParticipant.connection.status ==
+                                connectionStatus.CONNECTED
+                                  ? 'box-shadow-default'
+                                  : ''
+                              }} "
+                              >{{
+                                splitPartcipantName(
+                                  peerParticipant.participantName
+                                )
+                              }}</small
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mt-3 rounded-2 text-light text-center me-2">
+                        <i
+                          *ngIf="peerParticipant.handRaised"
+                          class="bi bi-hand-index-thumb-fill text-warning pe-1"
+                        ></i>
+                        <i
+                          class="button-icon bi pe-2"
+                          [ngClass]="
+                            peerParticipant.micEnabled
+                              ? 'bi-mic-fill'
+                              : 'bi-mic-mute-fill'
+                          "
+                        ></i>
+                        <small>{{ peerParticipant.participantName }}</small>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </div></ng-container
+            >
           </ng-template>
         </div>
       </div>

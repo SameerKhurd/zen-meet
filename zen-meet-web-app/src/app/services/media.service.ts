@@ -28,6 +28,7 @@ export enum mediaStatus {
 })
 export class MediaService {
   localMediaStream!: MediaStream;
+  localScreenShareMediaStream!: MediaStream;
   cameraStatus: mediaStatus = mediaStatus.DISABLED;
   micStatus: mediaStatus = mediaStatus.DISABLED;
 
@@ -74,12 +75,8 @@ export class MediaService {
     const audio: any = document.createElement('audio');
     audio
       .setSinkId(this.speakar.deviceId)
-      .then(() => {
-        console.log('sucess');
-      })
-      .catch((rr: any) => {
-        console.log('err', rr);
-      });
+      .then(() => {})
+      .catch((rr: any) => {});
   }
 
   async requestMediaDevices(): Promise<void> {
@@ -91,6 +88,27 @@ export class MediaService {
       );
       this.cameraStatus = mediaStatus.ENABLED;
       this.micStatus = mediaStatus.ENABLED;
+    }
+  }
+
+  async requestScreenShareMedia(): Promise<void> {
+    const displayMediaOptions = {
+      video: {
+        displaySurface: 'window',
+      },
+      audio: false,
+    };
+    this.localScreenShareMediaStream =
+      await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+  }
+
+  stopScreenShareMedia() {
+    if (this.localScreenShareMediaStream) {
+      this.localScreenShareMediaStream
+        .getTracks()
+        .forEach((track: MediaStreamTrack) => {
+          track.stop();
+        });
     }
   }
 
@@ -118,8 +136,10 @@ export class MediaService {
   ): void {
     if (this.localMediaStream) {
       const [currMediaTrack] = this.localMediaStream[getMediaTracksMethod]();
-      currMediaTrack.enabled = false;
-      currMediaTrack.stop();
+      if (currMediaTrack) {
+        currMediaTrack.enabled = false;
+        currMediaTrack.stop();
+      }
     }
   }
 

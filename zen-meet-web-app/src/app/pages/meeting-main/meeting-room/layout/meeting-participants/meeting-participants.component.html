@@ -83,6 +83,7 @@
               *ngIf="meetingService.isRaisedHand"
               class="btn btn-sm p-0 border-0 btn-outline-light"
               (click)="onRaiseHand()"
+              matTooltip="Lower Hand"
             >
               <i
                 class="bi px-1"
@@ -95,9 +96,25 @@
               ></i>
             </button>
             <button
+              *ngIf="
+                meetingService.screenSharing.isEnabled &&
+                meetingService.screenSharing.isUserScreenSharing
+              "
+              class="btn btn-sm p-0 border-0 btn-outline-success"
+              (click)="onScreenShareToggle()"
+              matTooltip="Stop Sharing Screen"
+            >
+              <i class="bi bi-arrow-up-square-fill px-1"></i>
+            </button>
+            <button
               class="btn btn-sm p-0 border-0 btn-outline-light"
               [disabled]="mediaService.micStatus === mediaStatus.LOADING"
               (click)="onMicToggle()"
+              [matTooltip]="
+                mediaService.micStatus === mediaStatus.ENABLED
+                  ? 'Turn Mic Off'
+                  : 'Turn Mic On'
+              "
             >
               <i
                 class="bi px-1"
@@ -112,6 +129,11 @@
               class="btn btn-sm p-0 border-0 btn-outline-light pe-1"
               [disabled]="mediaService.cameraStatus === mediaStatus.LOADING"
               (click)="onCameraToggle()"
+              [matTooltip]="
+                mediaService.cameraStatus === mediaStatus.ENABLED
+                  ? 'Turn Camera Off'
+                  : 'Turn Camera On'
+              "
             >
               <i
                 class="bi ps-1"
@@ -162,6 +184,16 @@
                 *ngIf="peerParticipant.handRaised"
                 class="bi bi-hand-index-thumb-fill text-warning px-1"
               ></i>
+              <i
+                *ngIf="
+                  meetingService.screenSharing.isEnabled &&
+                  meetingService.screenSharing
+                    .currScreenSharingParticipantId ===
+                    peerParticipant.participantId
+                "
+                class="bi bi-arrow-up-square-fill text-success px-1"
+              ></i>
+
               <i
                 class="bi px-1"
                 [ngClass]="
