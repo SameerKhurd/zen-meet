@@ -82,8 +82,8 @@
         </div>
       </div>
     </div>
-    <div class="row pt-4">
-      <div class="col-md-6 p-1 fade-in-left">
+    <div class="row">
+      <div class="col-md-6 p-1 pt-4 fade-in-left">
         <div
           class="me-4 py-1 ps-3 pe-4 fade-in-left text-secondary border-start border-4 border-secondary"
         >
@@ -105,11 +105,11 @@
           >
         </div>
       </div>
-      <div class="col-md-6 p-1 fade-in-right">
+      <div class="col-md-6 p-1 fade-in-right pt-4">
         <div class="mx-4 d-flex">
           <div class="flex-fill">
             <button
-              class="btn btn-light w-100"
+              class="btn btn-light w-100 text-nowrap" 
               (click)="openJoinMeetingDialog()"
             >
               &nbsp; Join Meeting &nbsp;
@@ -121,7 +121,7 @@
           </div>
           <div class="flex-fill">
             <button
-              class="btn btn-danger w-100"
+              class="btn btn-danger w-100 text-nowrap"
               (click)="openNewMeetingDialog()"
             >
               Start New Meeting
