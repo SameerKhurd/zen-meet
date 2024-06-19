@@ -119,7 +119,7 @@
             </div>
 
             <!-- Participant tiles -->
-            <ng-container *ngIf="!isExpand">
+            <ng-container *ngIf="!isExpand; else participantsCollapsedTiles">
               <div
                 *ngFor="let peerParticipant of currPeerPartcipants"
                 [style.height]="videoTileHeight + 'px'"
@@ -251,6 +251,19 @@
                 </ng-template>
               </div></ng-container
             >
+
+            <ng-template #participantsCollapsedTiles>
+              <div
+                *ngFor="let peerParticipant of currPeerPartcipants"
+                style="height: 0%; width: 0%"
+              >
+                <video
+                  style="height: 0%; width: 0%"
+                  [srcObject]="peerParticipant.connection.remoteMediaStream"
+                  [autoplay]="true"
+                ></video>
+              </div>
+            </ng-template>
           </ng-template>
         </div>
       </div>

@@ -125,10 +125,7 @@ export class RTCAnswerConnectionService extends RTCConnectionAbstractService {
     type: any,
     offerIceCandidateData: CandidateDoc
   ): Promise<void> {
-    if (
-      type === 'added' &&
-      offerIceCandidateData.sessionTimeId === this.sessionTimeId
-    ) {
+    if (offerIceCandidateData.sessionTimeId === this.sessionTimeId) {
       const newICECandidate: RTCIceCandidate = new RTCIceCandidate(
         offerIceCandidateData.candidateData
       );

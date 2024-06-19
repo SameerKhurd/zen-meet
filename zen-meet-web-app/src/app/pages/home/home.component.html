@@ -42,9 +42,9 @@
           class="me-4 mt-3 pe-4 fs-5 lh-base border-dark fade-in-left"
           style="color: #aaa"
         >
-          Create meeting rooms, video and audio calls, send messages, share
-          your screen and use interactive features like reactions and raise hand
-          with multiple participants on ZenMeet.
+          Create meeting rooms, video and audio calls, send messages, share your
+          screen and use interactive features like reactions and raise hand with
+          multiple participants on ZenMeet.
         </div>
       </div>
       <div class="col-md-6 p-1 pt-3">
@@ -89,27 +89,49 @@
         >
           <span>
             <strong>Disclaimer: </strong>
-            This application is inspired by
+            This application is inspired by platforms like
             <a
               class="text-decoration-underline text-secondary"
               target="_blank"
               href="https://www.microsoft.com/en-in/microsoft-teams/group-chat-software"
               >Microsoft Teams</a
+            >,
+
+            <a
+              class="text-decoration-underline text-secondary"
+              target="_blank"
+              href="https://zoom.us/"
+              >Zoom</a
+            >, and
+            <a
+              class="text-decoration-underline text-secondary"
+              target="_blank"
+              href="https://workspace.google.com/products/meet/"
+              >Google Meet</a
             >
-            application and is intended for personal experimentation and
-            learning only. ZenMeet is a real-time communication platform
-            designed for seamless and interactive online meetings. The platform
-            uses WebRTC for video and audio calls, public STUN servers for
-            establishing connection between peers and custom Pub-Sub channels
-            for messaging and sharing connections details.</span
+            and is intended for personal experimentation and learning only.
+            ZenMeet is a real-time communication platform designed for seamless
+            and interactive online meetings. The platform uses WebRTC for video
+            and audio calls, public STUN servers for establishing connection
+            between peers and custom Pub-Sub channels for messaging and sharing
+            connections details.</span
           >
+          <span>
+            For more details, check out
+            <a
+              class="text-decoration-underline text-secondary"
+              target="_blank"
+              href="https://medium.com/@sameerkhurd/from-design-to-demo-building-a-full-stack-video-conferencing-platform-like-zoom-microsoft-teams-761ec676d237"
+              >ZenMeet System Design Blog</a
+            >.
+          </span>
         </div>
       </div>
       <div class="col-md-6 p-1 fade-in-right pt-4">
         <div class="mx-4 d-flex">
           <div class="flex-fill">
             <button
-              class="btn btn-light w-100 text-nowrap" 
+              class="btn btn-light w-100 text-nowrap"
               (click)="openJoinMeetingDialog()"
             >
               &nbsp; Join Meeting &nbsp;

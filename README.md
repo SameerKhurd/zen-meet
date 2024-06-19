@@ -1,4 +1,4 @@
-# ZenMeet : Online Video Conferencing Platform [Full Stack]
+# ZenMeet : Online Real-Time Video Conferencing Platform [Full Stack]
 
 ## Overview
 
@@ -12,7 +12,7 @@ Checkout&nbsp; [Live Demo : &nbsp;zenmeet.web.app ](https://zenmeet.web.app/)
 
 ### System Design Blog
 
-For a detailed explanation of the system design and implementation, checkout [System Design Blog](/).
+For a detailed explanation of the system design and implementation, checkout [System Design Blog](https://medium.com/@sameerkhurd/from-design-to-demo-building-a-full-stack-video-conferencing-platform-like-zoom-microsoft-teams-761ec676d237).
 
 <br />
 
@@ -109,6 +109,6 @@ For a detailed explanation of the system design and implementation, checkout [Sy
 - People Tab
   ![People Tab](screenshots/5_people_tab.png)
 
-- Screen Sharing - Runtime Error Result
+- Screen Sharing
   ![Screen Sharing](screenshots/6_screen_sharing.png)
   [More Screenshots](./screenshots/)

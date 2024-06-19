@@ -26,12 +26,14 @@ export class AnswerCandidatesChannel {
     meetingId: string,
     connectionId: string,
     sessionTimeId: number,
+    candidateId: string,
     answerCandidateData: RTCIceCandidateInit
   ): Promise<void> {
     await this.connectionCollectionService.addAnswerCandidate(
       meetingId,
       connectionId,
       sessionTimeId,
+      candidateId,
       answerCandidateData
     );
   }

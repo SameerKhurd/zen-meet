@@ -1,5 +1,7 @@
 import { stunServers } from 'src/environments/environment';
 import { Subject } from 'rxjs';
+import { OfferCandidatesChannel } from 'src/app/services/channels/offer-candidates-channel';
+import { AnswerCandidatesChannel } from 'src/app/services/channels/answer-candidates-channel';
 
 export enum connectionStatus {
   NEW = 0,
@@ -16,9 +18,11 @@ export abstract class RTCConnectionAbstractService {
   audioReceiver: RTCRtpReceiver | any = undefined;
   peerConnection!: RTCPeerConnection;
   isCallAnswered: boolean = false;
+  publishCandidateCount: number = 0;
 
   constructor() {
     this.remoteMediaStream = new MediaStream();
+    this.publishCandidateCount = 0;
   }
 
   private replaceConnectionMediaTrack(
@@ -73,7 +77,7 @@ export abstract class RTCConnectionAbstractService {
   }
 
   handleIceCandidateEvent(
-    candidatesChannel: any,
+    candidatesChannel: OfferCandidatesChannel | AnswerCandidatesChannel,
     meetingId: string,
     connectionId: string,
     sessionId: number
@@ -83,10 +87,12 @@ export abstract class RTCConnectionAbstractService {
     ) => {
       if (event.candidate) {
         const iceCandidate: RTCIceCandidateInit = event.candidate.toJSON();
+        this.publishCandidateCount++;
         await candidatesChannel.publish(
           meetingId,
           connectionId,
           sessionId,
+          this.publishCandidateCount.toString(),
           iceCandidate
         );
       }

@@ -1,4 +1,4 @@
-import { ConnectionCollectionService } from "../database-services/connection-collection.service";
+import { ConnectionCollectionService } from '../database-services/connection-collection.service';
 
 export interface PubSubChannel {
   publish(): void;
@@ -26,12 +26,14 @@ export class OfferCandidatesChannel {
     meetingId: string,
     connectionId: string,
     sessionTimeId: number,
+    candidateId: string,
     offerCandidateData: RTCIceCandidateInit
   ): Promise<void> {
     await this.connectionCollectionService.addOfferCandidate(
       meetingId,
       connectionId,
       sessionTimeId,
+      candidateId,
       offerCandidateData
     );
   }

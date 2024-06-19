@@ -12,6 +12,7 @@ import {
   DocumentData,
   DocumentChange,
   QuerySnapshot,
+  DocumentReference,
 } from '@angular/fire/firestore';
 
 export class CollectionPath {
@@ -53,6 +54,7 @@ export class ConnectionCollectionService {
     meetingId: string,
     connectionId: string,
     sessionTimeId: number,
+    candidateId: string,
     offerCandidateData: RTCIceCandidateInit
   ): Promise<void> {
     const connOfferCandidatesCollectionPath: string =
@@ -64,17 +66,22 @@ export class ConnectionCollectionService {
       this.firestore,
       connOfferCandidatesCollectionPath
     );
-    const candidateData: CandidateDoc = {
+    const candidateDoc: CandidateDoc = {
       sessionTimeId: sessionTimeId,
       candidateData: offerCandidateData,
     };
-    await addDoc(connOfferCandidatesCollectionRef, candidateData);
+    const candidateDocRef: DocumentReference = doc(
+      connOfferCandidatesCollectionRef,
+      candidateId
+    );
+    await setDoc(candidateDocRef, candidateDoc);
   }
 
   async addAnswerCandidate(
     meetingId: string,
     connectionId: string,
     sessionTimeId: number,
+    candidateId: string,
     answerCandidateData: RTCIceCandidateInit
   ): Promise<void> {
     const connAnswerCandidatesCollectionPath: string =
@@ -87,11 +94,15 @@ export class ConnectionCollectionService {
       connAnswerCandidatesCollectionPath
     );
 
-    const candidateData: CandidateDoc = {
+    const candidateDoc: CandidateDoc = {
       sessionTimeId: sessionTimeId,
       candidateData: answerCandidateData,
     };
-    await addDoc(connAnswerCandidatesCollectionRef, candidateData);
+    const candidateDocRef: DocumentReference = doc(
+      connAnswerCandidatesCollectionRef,
+      candidateId
+    );
+    await setDoc(candidateDocRef, candidateDoc);
   }
 
   async addCallData(
